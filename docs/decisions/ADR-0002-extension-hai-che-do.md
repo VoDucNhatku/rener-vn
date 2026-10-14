@@ -12,7 +12,7 @@ Nhóm cần 300–500 bài cho kho thị trường trong 2–3 tuần. Meta khô
 |---|---|---|
 | A. Chỉ Nhận định từng bài + đóng góp | Ít rủi ro điều khoản | Khó đạt 300 bài kịp hạn |
 | B. Hai chế độ; Thu thập do người dùng bật, giới hạn chặt | Đủ dữ liệu; đúng proposal | Phụ thuộc giao diện Facebook; rủi ro tài khoản bị hỏi xác minh |
-| C. Bot tự chạy nền bằng trình duyệt tự động | Thu nhanh | Trái nguyên tắc người dùng chủ động; dễ bị chặn; không đúng proposal v1.3 |
+| C. Bot tự chạy nền bằng trình duyệt tự động | Thu nhanh | Trái nguyên tắc người dùng chủ động; dễ bị chặn; không đúng proposal (v1.2 và v1.3 mô tả giống nhau) |
 
 ## Quyết định
 

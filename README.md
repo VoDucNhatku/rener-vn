@@ -57,7 +57,7 @@ Toàn bộ mục lục: [docs/README.md](docs/README.md).
 
 ```text
 docs/
-  00-proposal/        Proposal v1.3 đã nộp + đối chiếu với repo
+  00-proposal/        Proposal v1.2 và v1.3 + so sánh hai bản + đối chiếu với repo
   01-product/         Người dùng, hành trình, tính năng, màn hình
   02-data/            Từ điển dữ liệu, gán nhãn, pipeline, chuẩn hóa, gộp trùng, thống kê
   03-system/          Kiến trúc, luồng web, API, CSDL, extension
