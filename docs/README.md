@@ -2,7 +2,7 @@
 
 | Phần | File | Trả lời câu hỏi |
 |---|---|---|
-| **00 Proposal** | [README](00-proposal/README.md) · [PDF v1.3](00-proposal/proposal-ReNER-VN-v1.3.pdf) | Đề tài yêu cầu gì; repo này khớp proposal ở đâu, khác ở đâu |
+| **00 Proposal** | [README](00-proposal/README.md) · [PDF v1.2](00-proposal/proposal-ReNER-VN-v1.2.pdf) · [PDF v1.3](00-proposal/proposal-ReNER-VN-v1.3.pdf) | Đề tài yêu cầu gì; repo này khớp proposal ở đâu, khác ở đâu |
 | **01 Sản phẩm** | [Tầm nhìn và người dùng](01-product/01-tam-nhin-va-nguoi-dung.md) | Ai dùng, vấn đề gì, phạm vi đến đâu |
 | | [Hành trình người dùng](01-product/02-hanh-trinh-nguoi-dung.md) | Từng người dùng đi qua những bước nào (J1–J5) |
 | | [Tính năng và màn hình](01-product/03-tinh-nang-va-man-hinh.md) | Web và extension có những màn nào, mỗi màn có gì |
