@@ -140,3 +140,7 @@ Khi `status ≠ ok` thì `median`, `p25`, `p75`, `delta_percent`, `verdict` là 
 | Tốc độ gửi của một token | ≤ 60 bài/phút |
 | Phân tích đang chạy cùng lúc của một người | 1 |
 | Lần gọi LLM tối đa cho một bài | 3 (gồm thử lại) |
+
+## 6. Trạng thái triển khai
+
+Đã có code trong `apps/api` (OpenAPI tại `/docs`). Những điểm khác hoặc thêm so với bản thỏa thuận trên được liệt kê trong [apps/api/README.md](../../apps/api/README.md#ghi-chú-triển-khai-so-với-api-contract).
