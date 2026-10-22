@@ -44,3 +44,9 @@ apps/web/src/
 - Mỗi màn có đủ trạng thái đang tải / rỗng / lỗi / thành công; dùng được bằng bàn phím; hiển thị được trên điện thoại; tương phản đạt WCAG AA.
 - Vai trò người dùng chỉ quyết định hiển thị menu; quyền thật do API kiểm.
 - Trước khi coi là xong: chụp màn hình từng trạng thái và xem lại.
+
+## Bản giao diện thử (nhánh `feat/web-ui-prototype`)
+
+Chạy: `npm install` rồi `npm run dev` trong `apps/web`, mở http://localhost:3000. Chưa gọi API thật; dữ liệu lấy từ `src/lib/api/mock-data.ts` (bài **ví dụ tự tạo**).
+
+**Bài thật từ extension (chỉ trên máy, không commit).** Nếu có file `data/demo/extension-sample.json` (thư mục `data/` nằm trong `.gitignore`), web nạp thêm các bài đó và gắn nhãn "Bài thật · đã che SĐT"; lọc bằng `?nguon=that`. Mỗi phần tử gồm `post` theo [ingest-post.schema.json](../../spec/schemas/ingest-post.schema.json) và `labels` là đoạn trích nguyên văn do người gán; đoạn không tìm thấy trong chữ bài bị bỏ. Web che số điện thoại thêm một lần khi nạp (`src/lib/privacy.ts`). Không có file thì web chỉ hiện bài ví dụ. Đổi đường dẫn bằng biến môi trường `RENER_LOCAL_SAMPLES`.

@@ -106,10 +106,17 @@ export interface ListingCard {
   rent: Pick<Rent, 'visibility' | 'amount_form' | 'amount_vnd' | 'min_vnd' | 'max_vnd' | 'basis' | 'period'>;
   area_m2: number | null;
   fees: Fee[];
-  posted_at: string;
+  /** null when the collector could not read the post time. */
+  posted_at: string | null;
   verdict: Verdict | null;
   delta_percent: number | null;
+  /** UI-only, not in the API contract: where this demo row came from. */
+  origin: DataOrigin;
+  text_complete: boolean;
 }
+
+/** `demo` = invented example posts; `extension` = local posts collected by the team's extension (never committed). */
+export type DataOrigin = 'demo' | 'extension';
 
 export interface ListingsResponse {
   items: ListingCard[];
@@ -125,9 +132,11 @@ export interface ListingDetail {
     text: string;
     permalink: string | null;
     source_group_name: string | null;
-    posted_at: string;
+    posted_at: string | null;
+    text_complete: boolean;
   };
   sibling_count: number;
+  origin: DataOrigin;
 }
 
 export type ComparisonReason =

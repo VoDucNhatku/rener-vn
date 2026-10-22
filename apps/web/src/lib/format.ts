@@ -141,6 +141,7 @@ export function verdictSentence(c: Comparison, rentForm?: Rent['amount_form'], v
     if (c.verdict === 'near') return `Gần trung vị (${c.delta_percent > 0 ? '+' : '−'}${formatPercent(c.delta_percent)}) của ${group}.`;
     return `${VERDICT_WORD[c.verdict]} ${formatPercent(c.delta_percent)} so với trung vị của ${group}.`;
   }
+  if (c.reason_codes.includes('price_not_exact') && visibility === 'not_stated') return 'Bài không ghi giá, chưa so sánh được.';
   if (c.reason_codes.includes('price_not_exact')) {
     const form =
       visibility === 'hidden_explicit' ? 'không công khai' : rentForm === 'starting_from' ? '“từ…”' : rentForm === 'range' ? '“khoảng…”' : 'không rõ ràng';

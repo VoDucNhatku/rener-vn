@@ -199,7 +199,10 @@ export function DetailBody({ detail }: { detail: ListingDetail }) {
           </div>
           <EvidenceHighlighter text={post.text} evidence={allEvidence} active={activeKeys} onSelect={onSpan} size="lg" />
           <p className={styles.source}>
-            {post.source_group_name} · số điện thoại đã che · bài ví dụ tự tạo
+            {[post.source_group_name, 'số điện thoại đã che', detail.origin === 'extension' ? 'bài thật thu bằng extension' : 'bài ví dụ tự tạo']
+              .filter(Boolean)
+              .join(' · ')}
+            {!post.text_complete && ' · chữ có thể bị cắt vì chưa mở “Xem thêm”'}
           </p>
           <ul className={styles.legend} aria-label="Chú thích nhãn">
             {(['PRICE', 'AREA', 'LOC', 'ROOM', 'FEE'] as const).map((l) => (

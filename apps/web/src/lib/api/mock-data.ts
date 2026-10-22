@@ -389,9 +389,11 @@ export const DETAILS: Record<string, ListingDetail> = Object.fromEntries(
         permalink: null,
         source_group_name: s.group,
         posted_at: s.posted_at,
+        text_complete: true,
       },
       sibling_count: 0,
-    },
+      origin: 'demo',
+    } satisfies ListingDetail,
   ]),
 );
 
@@ -442,6 +444,8 @@ export const CARDS: ListingCard[] = SEEDS.map((s) => {
     posted_at: s.posted_at,
     verdict: c.verdict,
     delta_percent: c.delta_percent,
+    origin: 'demo',
+    text_complete: true,
   };
 });
 

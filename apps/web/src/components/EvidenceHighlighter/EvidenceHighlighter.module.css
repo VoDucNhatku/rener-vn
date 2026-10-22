@@ -35,8 +35,11 @@
     box-shadow var(--dur-base) var(--ease);
 }
 
+/* Buttons render as inline-block, so they must not inherit the tall paragraph line-height. */
 button.mark {
   cursor: pointer;
+  line-height: 1.35;
+  vertical-align: baseline;
 }
 
 button.mark:hover {

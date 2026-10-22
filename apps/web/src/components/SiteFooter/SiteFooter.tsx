@@ -29,7 +29,10 @@ export function SiteFooter() {
         </nav>
       </div>
       <div className={`container ${styles.legal}`}>
-        <span>Bài đăng minh họa là ví dụ tự tạo. Số điện thoại luôn được che trước khi gửi.</span>
+        <span>
+          Bài có nhãn “Ví dụ tự tạo” là bài minh họa. Bài thật chỉ nạp từ máy của nhóm, không đưa lên GitHub, và luôn được che số
+          điện thoại.
+        </span>
       </div>
     </footer>
   );

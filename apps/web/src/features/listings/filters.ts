@@ -5,6 +5,8 @@ export type SearchParams = Record<string, string | string[] | undefined>;
 
 const TYPES: PropertyType[] = ['phong_tro', 'ccmn', 'can_ho_dich_vu', 'nha_nguyen_can'];
 const SORTS = ['newest', 'price_asc', 'price_desc'] as const;
+// ?nguon=that → posts from the team's extension; ?nguon=vidu → invented examples.
+const ORIGINS: Record<string, ListingQuery['origin']> = { that: 'extension', vidu: 'demo' };
 
 const list = (v: string | string[] | undefined) => (v == null ? [] : Array.isArray(v) ? v : [v]);
 const num = (v: string | string[] | undefined) => {
@@ -30,6 +32,7 @@ export function parseFilters(sp: SearchParams): ListingQuery {
     area_min: num(sp.dt_min),
     area_max: num(sp.dt_max),
     has_price: (Array.isArray(sp.co_gia) ? sp.co_gia[0] : sp.co_gia) === '1' || undefined,
+    origin: ORIGINS[(Array.isArray(sp.nguon) ? sp.nguon[0] : sp.nguon) ?? ''],
     sort: SORTS.includes(sort as (typeof SORTS)[number]) ? sort : 'newest',
   };
 }

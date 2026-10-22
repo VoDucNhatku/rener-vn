@@ -5,7 +5,7 @@ import { EyeOff, SearchX, X } from 'lucide-react';
 import { FilterBar } from '@/features/listings/FilterBar';
 import { ListingGrid } from '@/features/listings/ListingGrid';
 import { parseFilters, type SearchParams } from '@/features/listings/filters';
-import { WARDS, getListings } from '@/lib/api/client';
+import { getListings, getWards, localSampleCount } from '@/lib/api/client';
 import { PROPERTY_LABEL, formatDate } from '@/lib/format';
 import styles from './page.module.css';
 
@@ -19,6 +19,7 @@ const FILTER_LABELS: Record<string, (v: string) => string> = {
   dt_min: (v) => `DT từ ${v} m²`,
   dt_max: (v) => `DT đến ${v} m²`,
   co_gia: () => 'Chỉ tin có giá',
+  nguon: (v) => (v === 'that' ? 'Bài thật từ extension' : 'Bài ví dụ'),
 };
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
@@ -46,7 +47,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       </header>
 
       <Suspense>
-        <FilterBar wards={WARDS} />
+        <FilterBar wards={getWards()} localCount={localSampleCount()} />
       </Suspense>
 
       <div className={styles.summary} aria-live="polite">

@@ -11,7 +11,15 @@ export function ListingCard({ card }: { card: Card }) {
     <Link href={`/tin/${card.listing_id}`} className={styles.card}>
       <div className={styles.top}>
         <span className={styles.type}>{PROPERTY_LABEL[card.property_type]}</span>
-        <span className={styles.date}>{formatDate(card.posted_at)}</span>
+        <span className={styles.date}>{card.posted_at ? formatDate(card.posted_at) : 'Chưa rõ ngày đăng'}</span>
+      </div>
+      <div className={styles.badges}>
+        {card.origin === 'extension' ? (
+          <span className={styles.real}>Bài thật · đã che SĐT</span>
+        ) : (
+          <span className={styles.example}>Ví dụ tự tạo</span>
+        )}
+        {!card.text_complete && <span className={styles.partial}>Chữ chưa đầy đủ</span>}
       </div>
 
       <p className={[styles.price, head.missing ? styles.missing : ''].join(' ')}>

@@ -12,8 +12,10 @@ import {
   OVERVIEW,
   REVIEWS,
 } from './mock-data';
+import { loadLocalSamples } from './local-samples';
 import type {
   Comparison,
+  DataOrigin,
   LabResult,
   ListingDetail,
   ListingsResponse,
@@ -31,13 +33,18 @@ export interface ListingQuery {
   area_min?: number;
   area_max?: number;
   has_price?: boolean;
+  origin?: DataOrigin;
   sort?: 'price_asc' | 'price_desc' | 'newest';
 }
+
+// Local extension posts (git-ignored, may be absent) first, then the invented examples.
+const allCards = () => [...loadLocalSamples().cards, ...CARDS];
 
 /** GET /listings — filtering/sorting happens in the API; the mock imitates it. */
 export async function getListings(q: ListingQuery): Promise<ListingsResponse> {
   const priceFilter = q.price_min != null || q.price_max != null || q.has_price;
-  let items = CARDS.filter((c) => {
+  let items = allCards().filter((c) => {
+    if (q.origin && c.origin !== q.origin) return false;
     if (q.ward?.length && !q.ward.includes(c.ward_name ?? '')) return false;
     if (q.type?.length && !q.type.includes(c.property_type)) return false;
     if (q.area_min != null && (c.area_m2 == null || c.area_m2 < q.area_min)) return false;
@@ -62,17 +69,18 @@ export async function getListings(q: ListingQuery): Promise<ListingsResponse> {
       const bv = b.rent.amount_vnd ?? Number.POSITIVE_INFINITY;
       return q.sort === 'price_asc' ? av - bv : bv - av;
     }
-    return b.posted_at.localeCompare(a.posted_at);
+    // Unknown post time sorts last.
+    return (b.posted_at ?? '').localeCompare(a.posted_at ?? '');
   });
   return { items: sorted, total: sorted.length, hidden_no_price: noPriceHidden, data_as_of: OVERVIEW.updated_at };
 }
 
 export async function getListing(id: string): Promise<ListingDetail | null> {
-  return DETAILS[id] ?? null;
+  return loadLocalSamples().details[id] ?? DETAILS[id] ?? null;
 }
 
 export async function getComparison(id: string): Promise<Comparison | null> {
-  return COMPARISONS[id] ?? null;
+  return loadLocalSamples().comparisons[id] ?? COMPARISONS[id] ?? null;
 }
 
 export async function getMarketSummary(): Promise<MarketSummary> {
@@ -91,4 +99,11 @@ export async function getReviews(): Promise<ReviewItem[]> {
   return REVIEWS;
 }
 
-export const WARDS = Array.from(new Set(CARDS.map((c) => c.ward_name).filter(Boolean))) as string[];
+export function getWards(): string[] {
+  return Array.from(new Set(allCards().map((c) => c.ward_name).filter(Boolean))) as string[];
+}
+
+/** How many local extension posts are loaded; 0 when the git-ignored file is absent. */
+export function localSampleCount(): number {
+  return loadLocalSamples().cards.length;
+}
