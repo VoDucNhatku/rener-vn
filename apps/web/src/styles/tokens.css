@@ -1,0 +1,127 @@
+/*
+ * ReNER-VN design tokens — "bút dạ quang trên giấy".
+ * Giấy ấm làm nền, mực đậm làm chữ, mỗi nhãn NER là một màu bút dạ quang.
+ * Mọi màu trong component lấy từ đây. Quy ước đầy đủ: docs/01-product/04-he-thong-thiet-ke.md
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Nền & bề mặt */
+  --paper: #f6f4ee;
+  --surface: #ffffff;
+  --subtle: #efece4;
+  --hover: #f3f0e9;
+
+  /* Viền */
+  --border: #e3dfd5;
+  --border-strong: #c9c3b6;
+
+  /* Chữ (contrast trên --surface) */
+  --ink: #17181c; /* 17.6:1 */
+  --ink-2: #57554e; /* 7.4:1 */
+  --ink-3: #6b685f; /* 5.5:1 */
+  --icon: #8c887e; /* chỉ icon */
+
+  /* Một điểm nhấn: mực xanh. Chữ trắng trên nền này 8.9:1 */
+  --accent: #2337c6;
+  --accent-hover: #1b2da8;
+  --accent-active: #15238a;
+  --accent-ink: #ffffff;
+  --accent-subtle: rgba(35, 55, 198, 0.08);
+  --focus: #2337c6;
+
+  /* Bút dạ quang cho nhãn — luôn đi kèm chữ nhãn, không dùng màu một mình */
+  --mk-price: #ffe566;
+  --mk-area: #a6ebc9;
+  --mk-loc: #b5dcff;
+  --mk-room: #dccbff;
+  --mk-fee: #ffc9b0;
+  --mk-ink: #17181c;
+
+  /* Nhận định — chỉ dùng cho viền + chữ, kèm câu chữ đầy đủ */
+  --v-higher: #b42318;
+  --v-near: #57554e;
+  --v-lower: #067647;
+  --v-none: #8c887e;
+
+  /* Trạng thái (chấm 6px + chữ) */
+  --ok: #067647;
+  --warn: #b54708;
+  --danger: #b42318;
+
+  /* Chữ */
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Khoảng cách — lưới 4px */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  /* Bo góc */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --r-full: 9999px;
+
+  /* Lớp nổi duy nhất được có bóng */
+  --shadow-overlay: 0 8px 24px rgba(23, 24, 28, 0.1);
+  --shadow-paper: 0 1px 0 rgba(23, 24, 28, 0.04), 0 24px 48px -24px rgba(23, 24, 28, 0.18);
+
+  /* Chuyển động */
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 420ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Khung */
+  --container: 1152px;
+  --header-h: 56px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --paper: #12120f;
+    --surface: #1b1a17;
+    --subtle: #24231f;
+    --hover: #22211d;
+    --border: #2f2e29;
+    --border-strong: #46443d;
+    --ink: #eeece5;
+    --ink-2: #b6b2a7;
+    --ink-3: #9d998e;
+    --icon: #7d7a71;
+    --accent: #9aa6ff;
+    --accent-hover: #b0b9ff;
+    --accent-active: #c3caff;
+    --accent-ink: #0d1033;
+    --accent-subtle: rgba(154, 166, 255, 0.12);
+    --focus: #9aa6ff;
+    --mk-price: #6b5d12;
+    --mk-area: #1f5a3f;
+    --mk-loc: #1d4a72;
+    --mk-room: #4b3a78;
+    --mk-fee: #77402a;
+    --mk-ink: #f6f4ee;
+    --v-higher: #ff8a80;
+    --v-near: #b6b2a7;
+    --v-lower: #6fd8a5;
+    --ok: #6fd8a5;
+    --warn: #f5b971;
+    --danger: #ff8a80;
+    --shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-paper: 0 1px 0 rgba(0, 0, 0, 0.3), 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+  }
+}
