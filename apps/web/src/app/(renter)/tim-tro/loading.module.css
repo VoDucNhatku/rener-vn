@@ -1,0 +1,50 @@
+.page {
+  padding-top: var(--s-10);
+}
+
+.title,
+.bar,
+.card span {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--subtle) 0%, var(--hover) 50%, var(--subtle) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.title {
+  width: 220px;
+  height: 44px;
+  margin-bottom: var(--s-6);
+}
+
+.bar {
+  height: 150px;
+  border-radius: 12px;
+  margin-bottom: var(--s-10);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+
+.card {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.card span {
+  height: 12px;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

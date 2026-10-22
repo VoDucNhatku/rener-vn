@@ -1,0 +1,516 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: var(--paper);
+}
+
+/* Giấy kẻ dòng mờ, đậm dần về phía sân khấu */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    transparent 0 31px,
+    color-mix(in srgb, var(--ink) 4.5%, transparent) 31px 32px
+  );
+  mask-image: linear-gradient(90deg, transparent 0%, #000 45%, #000 100%);
+  pointer-events: none;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--s-10);
+  align-items: center;
+  min-height: calc(100vh - var(--header-h));
+  min-height: calc(100svh - var(--header-h));
+  padding-top: var(--s-12);
+  padding-bottom: var(--s-12);
+}
+
+/* ---------- Cột chữ ---------- */
+
+.copy {
+  position: relative;
+  display: grid;
+  gap: var(--s-10);
+}
+
+.beats {
+  display: grid;
+}
+
+.beat {
+  grid-area: 1 / 1;
+}
+
+/* Không có motion: chỉ nhịp đầu; ba nhịp sau đã thể hiện bằng các thẻ bên phải */
+.beat:not([data-beat='0']) {
+  display: none;
+}
+
+.hero[data-motion='on'] .beat {
+  display: block;
+}
+
+.eyebrow {
+  margin-bottom: var(--s-4);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(44px, 6.2vw, 84px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-variation-settings: 'opsz' 72;
+}
+
+.title em {
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(transparent 62%, var(--mk-price) 62%, var(--mk-price) 94%, transparent 94%);
+  padding: 0 0.04em;
+}
+
+.beatTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 3.6vw, 48px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  max-width: 460px;
+  margin-top: var(--s-5);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-8);
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-md);
+  font-size: 14.5px;
+  font-weight: 600;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.primary:hover {
+  background: var(--accent-hover);
+}
+
+.primary svg {
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.primary:hover svg {
+  transform: translateX(3px);
+}
+
+.secondary {
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.secondary:hover {
+  border-color: var(--ink);
+}
+
+.rail {
+  display: none;
+  gap: var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.hero[data-motion='on'] .rail {
+  display: flex;
+}
+
+.rail li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color var(--dur-base) var(--ease);
+}
+
+.railDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  transition: background-color var(--dur-base) var(--ease);
+}
+
+.railOn {
+  color: var(--ink);
+}
+
+.railOn .railDot {
+  background: var(--mk-price);
+  border-color: var(--ink);
+}
+
+/* ---------- Sân khấu ---------- */
+
+.stage {
+  position: relative;
+  height: 600px;
+}
+
+.tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.post,
+.sheet,
+.verdict {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-paper);
+  will-change: transform;
+}
+
+.post {
+  top: 40px;
+  left: 0;
+  width: min(440px, 72%);
+  padding: var(--s-5) var(--s-6) var(--s-4);
+  z-index: 1;
+}
+
+.postHead {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-2);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 38%, var(--border-strong) 0 7px, transparent 7.5px),
+    radial-gradient(circle at 50% 100%, var(--border-strong) 0 13px, transparent 13.5px),
+    var(--subtle);
+}
+
+.postGroup {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.postMeta {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.postMore {
+  margin-left: auto;
+  color: var(--icon);
+}
+
+.postText {
+  padding-top: 4px;
+}
+
+/* Bút dạ quang quét qua: nền là gradient để GSAP chạy background-size */
+.post mark,
+.post button[data-label] {
+  background-color: transparent;
+  background-image: linear-gradient(var(--mk), var(--mk));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.postFoot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  margin-top: var(--s-3);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.postFoot span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stamp {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: 1.5px solid var(--v-higher);
+  border-radius: 4px;
+  color: var(--v-higher);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
+.sheet {
+  top: 0;
+  right: 0;
+  width: 300px;
+  padding: var(--s-4) var(--s-5);
+  z-index: 2;
+}
+
+.sheetTitle,
+.verdictKicker {
+  margin-bottom: var(--s-3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.sheetList {
+  display: grid;
+  margin: 0;
+}
+
+.sheetList div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 7px 0;
+  border-top: 1px dashed var(--border);
+  font-size: 13px;
+}
+
+.sheetList dt {
+  color: var(--ink-3);
+}
+
+.sheetList dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheetPrice {
+  border-top: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 10px !important;
+  flex-direction: column;
+  gap: 2px !important;
+}
+
+.sheetPrice dd {
+  text-align: left;
+  white-space: nowrap;
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.sheetPrice dd small {
+  margin-left: 4px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: 0;
+}
+
+.sheetFee dt::before {
+  content: 'PHÍ';
+  margin-right: 6px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--mk-fee);
+  color: var(--mk-ink);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.verdict {
+  right: 24px;
+  bottom: 0;
+  width: 380px;
+  padding: var(--s-5);
+  z-index: 3;
+}
+
+.verdictText {
+  padding: var(--s-3) var(--s-4);
+  border: 1.5px solid var(--v-none);
+  border-left-width: 4px;
+  border-radius: var(--r-md);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.verdictText[data-v='higher'] {
+  border-color: var(--v-higher);
+}
+.verdictText[data-v='near'] {
+  border-color: var(--v-near);
+}
+.verdictText[data-v='lower'] {
+  border-color: var(--v-lower);
+}
+
+.bar {
+  position: relative;
+  height: 22px;
+  margin: 38px 0 var(--s-3);
+}
+
+.barAxis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.barIqr {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--mk-area);
+  border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+  border-radius: 3px;
+  transform-origin: center;
+}
+
+.barMedian {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+
+.barTarget {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--surface);
+}
+
+.barTarget span {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.verdictMeta {
+  font-size: 12.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.verdictFine {
+  margin-top: var(--s-2);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* Che sân khấu cho tới khi GSAP đặt khung đầu, tránh nháy bố cục cuối (xem layout.tsx) */
+:global(html[data-hero-motion='pending']) .hero:not([data-motion='on']) .stage {
+  visibility: hidden;
+}
+
+/* ---------- Màn nhỏ: xếp chồng, không ghim ---------- */
+
+@media (max-width: 999px) {
+  .grid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    gap: var(--s-8);
+  }
+  .stage {
+    height: auto;
+    display: grid;
+  }
+  .tilt {
+    position: static;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .post,
+  .sheet,
+  .verdict {
+    position: relative;
+    inset: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .post {
+    padding: var(--s-4);
+  }
+  .lead {
+    font-size: 15px;
+  }
+}
