@@ -16,8 +16,7 @@ interface Props {
 }
 
 /**
- * Scroll-driven explainer, adapted from the pinned/scrubbed hero idea in KusShoes'
- * ShoeHeroExperience: the "product" here is a rental post being read in four beats.
+ * Pinned, scroll-scrubbed explainer: a rental post is read in four beats.
  * Everything renders in its final state first; GSAP only adds motion on wide screens
  * without prefers-reduced-motion, so content stays readable with JS or motion off.
  */
@@ -101,7 +100,7 @@ export function ReadingHero({ detail, comparison }: Props) {
           .to(q('[data-bar-target]'), { left: q('[data-bar-target]')[0]?.dataset.pos ?? '50%', duration: 0.8, ease: 'power3.out' }, '<')
           .to({}, { duration: 0.4 });
 
-        // Pointer tilt on the stage (quickTo, as in KusShoes) — on a wrapper so it never fights the timeline.
+        // Pointer tilt runs on its own wrapper so it never fights the scroll timeline.
         const tilt = q('[data-tilt]')[0];
         const rx = gsap.quickTo(tilt, 'rotationX', { duration: 0.6, ease: 'power3.out' });
         const ry = gsap.quickTo(tilt, 'rotationY', { duration: 0.6, ease: 'power3.out' });

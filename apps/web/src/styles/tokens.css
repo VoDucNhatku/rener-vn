@@ -1,7 +1,7 @@
 /*
  * ReNER-VN design tokens — "bút dạ quang trên giấy".
  * Giấy ấm làm nền, mực đậm làm chữ, mỗi nhãn NER là một màu bút dạ quang.
- * Mọi màu trong component lấy từ đây. Quy ước đầy đủ: docs/01-product/04-he-thong-thiet-ke.md
+ * Mọi màu trong component lấy từ đây; không hard-code mã màu trong component.
  */
 
 :root {
