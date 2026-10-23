@@ -18,8 +18,14 @@ If these conflict or say nothing about a business rule: stop and ask in the issu
 
 ## Commands
 
-Not implemented yet. Planned: `make setup`, `make dev`, `make test`, `make seed`, `make eval`. Available now:
+Backend lives in `apps/api` (FastAPI + SQLite + worker). From the repo root (`make`), or `scripts/dev.ps1 <target>` on Windows:
 
+- `make setup` — venv, dependencies, `alembic upgrade head`, web `npm install`.
+- `make api` / `make worker` / `make dev` — API on :8000 (`/docs`), job worker, everything.
+- `make seed` — demo accounts + DEMO posts (visible only with `DEMO_MODE=true`).
+- `make test` — pytest (normalization table, fixtures, M8/M9, API acceptance cases, layer contracts).
+- `make lint` — `lint-imports` layer contracts (router → service → pipeline/models; pipeline is pure).
+- `make eval` — `eval/run_eval.py` on the dev split (test split only on a commit tagged `eval-freeze-v1`).
 - `python spec/tools/check_fixtures.py` — validate fixtures against schemas and evidence offsets.
 
 ## Rules that are easy to break
