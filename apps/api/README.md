@@ -8,7 +8,7 @@ API, pipeline trích xuất và worker chạy job. Đặc tả gốc: [API contr
 python -m venv .venv
 .venv/Scripts/python -m pip install -e ".[dev]"     # Linux/macOS: .venv/bin/python
 .venv/Scripts/python -m app.cli init-db               # alembic upgrade head -> data/db/rener.sqlite
-.venv/Scripts/python -m app.cli seed                  # tài khoản demo + bài DEMO (cần DEMO_MODE=true để thấy)
+.venv/Scripts/python -m app.cli seed                  # cần SEED_PASSWORD trong root .env/process env; DEMO_MODE=true để thấy
 .venv/Scripts/python -m uvicorn app.main:app --reload --port 8000   # http://localhost:8000/docs
 .venv/Scripts/python -m app.worker.run                # worker, cửa sổ khác
 .venv/Scripts/python -m pytest                        # test
@@ -77,5 +77,23 @@ flowchart LR
 
 - Chưa gọi Gemini thật: client viết theo REST `generateContent`, test bằng LLM giả. Cần chạy thử với khóa thật.
 - Nhánh LLM-raw cho RQ2 chưa có trong `run_eval.py`.
-- Web `apps/web` vẫn dùng mock; nối API là việc riêng (đổi `src/lib/api/client.ts`).
+- Web B1 đã nối stats/listings/detail/comparison bằng Server Components; các màn nhóm, auth UI, Thị trường chưa triển khai trong gói này.
 - Ngưỡng gộp trùng, từ khóa phân loại và luật regex mới là giá trị khởi đầu; phải chỉnh trên bài pilot/dev, không bao giờ trên tập test.
+
+## Tích hợp web B1
+
+API/worker/CLI đọc `.env` ở repo root. Khởi tạo an toàn bằng `python scripts/init-local-env.py`; file có sẵn được giữ nguyên. Dùng đường dẫn SQLite tuyệt đối, ví dụ `sqlite:///F:/TMG Final Project/rener-vn-latest/data/db/web-api-dev.sqlite`; đường dẫn tương đối được tính theo cwd, có thể dẫn tới nhiều DB ngoài ý muốn. Không ghi đè/xóa DB có sẵn. Default của `Settings` khi không đặt DATABASE_URL cũng là đường dẫn tuyệt đối dưới repo.
+
+`SEED_PASSWORD` nay đọc qua Settings, vì vậy `.env` root có hiệu lực cho CLI; đối số hoặc biến môi trường tiến trình được ưu tiên. Thiếu mật khẩu thì seed dừng với thông báo, không dùng mật khẩu mặc định. Script khởi tạo sinh secret/mật khẩu mà không in ra log. Seed idempotent nạp demo và gọi worker `drain` với Regex; worker nền chạy riêng bằng `python -m app.worker.run`.
+
+`app/schemas/public.py` khai báo response DTO cho listings/detail/comparison/stats, bảo toàn nullable và các khóa serializer. `/listings` thêm `is_demo` ở envelope để xác định dataset ngay cả khi kho rỗng; các trường cũ vẫn giữ. Không thay ngưỡng, phân loại hay luật thống kê. Mảng query dùng key lặp: `ward=A&ward=B&type=ccmn&type=phong_tro`.
+
+Xuất OpenAPI không cần server hay kết nối DB:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.export_openapi openapi.json
+```
+
+Client web sinh bằng `npm run generate:api` tại `apps/web`; script quản lý file tạm tự động. Hợp đồng được kiểm bằng `tests/test_public_contract.py` (OpenAPI validation, so nguyên response với serializer, null, evidence, phân tách demo/thật). Bộ browser E2E chạy API/worker service trên DB cô lập; xem [README web](../web/README.md).
+
+Các lệnh Windows ở repo root: `.\scripts\dev.ps1 lint`, `check-fixtures`, `generate-api`, `test-web`, `test-e2e`. Lệnh tương ứng API trực tiếp: `.\.venv\Scripts\python.exe -m pytest`, `.\.venv\Scripts\lint-imports.exe`.

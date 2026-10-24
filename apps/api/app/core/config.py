@@ -53,6 +53,7 @@ class Settings(BaseSettings):
     # Demo data (spec/fixtures + generated demo posts) is shown only in demo mode
     # and never mixed into real statistics or evaluation (AT17).
     demo_mode: bool = False
+    seed_password: str = ""
 
     eval_runs_dir: Path = REPO_ROOT / "eval" / "runs"
 

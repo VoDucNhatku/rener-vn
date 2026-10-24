@@ -1,43 +1,68 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { ApiState, LoadingState } from '@/components/ApiState/ApiState';
+import { StatusBadge } from '@/components/StatusBadge/StatusBadge';
+import { ComparisonPanel } from '@/features/listing-detail/ComparisonPanel';
+import { errorMessage } from '@/lib/api/http';
+import { parseDemo, type SearchParams } from '@/features/listings/filters';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight, Info } from 'lucide-react';
-import { PriceDistributionBar } from '@/components/PriceDistributionBar/PriceDistributionBar';
 import { DetailBody } from '@/features/listing-detail/DetailBody';
-import { getComparison, getListing } from '@/lib/api/client';
-import { PROPERTY_LABEL, dataRangeSentence, formatDate, formatShort, verdictSentence } from '@/lib/format';
+import { getListing } from '@/lib/api/client';
+import { PROPERTY_LABEL, formatDate } from '@/lib/format';
 import styles from './page.module.css';
 
 type Params = Promise<{ id: string }>;
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const detail = await getListing((await params).id);
-  return { title: detail ? PROPERTY_LABEL[detail.listing.room.property_type] : 'Không tìm thấy tin' };
+export const dynamic = 'force-dynamic';
+type Props = { params: Params; searchParams: Promise<SearchParams> };
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  let detail;
+  try {
+    detail = await getListing((await params).id, parseDemo(await searchParams));
+  } catch {
+    return { title: 'Chi tiết tin' };
+  }
+  if (!detail) notFound();
+  return { title: PROPERTY_LABEL[detail.listing.room.property_type] };
 }
 
-export default async function ListingPage({ params }: { params: Params }) {
+export default async function ListingPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const [detail, comparison] = await Promise.all([getListing(id), getComparison(id)]);
-  if (!detail || !comparison) notFound();
+  let detail;
+  try {
+    detail = await getListing(id, parseDemo(await searchParams));
+  } catch (error) {
+    return (
+      <div className={`container ${styles.page}`}>
+        <ApiState title="Chưa tải được tin" message={errorMessage(error)} />
+      </div>
+    );
+  }
+  if (!detail) notFound();
 
   const { listing, post } = detail;
   const loc = listing.location;
-  const place = [loc.landmark, loc.street, loc.ward_name, loc.old_ward_name, loc.old_district_name].filter(Boolean).join(' · ');
+  const place = [loc.landmark, loc.street, loc.ward_name, loc.old_ward_name, loc.old_district_name]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
     <div className={`container ${styles.page}`}>
-      <Link href="/tim-tro" className={styles.back}>
+      <Link href={`/tim-tro?demo=${detail.is_demo}`} className={styles.back}>
         <ArrowLeft size={14} aria-hidden="true" /> Về danh sách
       </Link>
 
       <header className={styles.head}>
         <div className={styles.badges}>
-          {detail.origin === 'extension' ? (
-            <span className={styles.real}>Bài thật · đã che SĐT</span>
+          {!detail.is_demo ? (
+            <StatusBadge tone="info">Đã che SĐT</StatusBadge>
           ) : (
-            <span className={styles.example}>Ví dụ tự tạo</span>
+            <StatusBadge>Ví dụ tự tạo</StatusBadge>
           )}
-          {!post.text_complete && <span className={styles.partial}>Chữ chưa đầy đủ</span>}
+          {!post.text_complete && <StatusBadge tone="warning">Chữ chưa đầy đủ</StatusBadge>}
         </div>
         <h1 className={styles.title}>
           {PROPERTY_LABEL[listing.room.property_type]}
@@ -57,45 +82,24 @@ export default async function ListingPage({ params }: { params: Params }) {
       {!post.text_complete && (
         <p className={styles.notice} role="note">
           <Info size={15} aria-hidden="true" />
-          Extension thu bài này khi chưa mở được “Xem thêm”, nên chữ bị cắt. Những gì phần chữ đã thu không nói tới sẽ hiện là
-          “Chưa rõ” hoặc “Không đề cập”, không đoán.
+          Văn bản nguồn chưa đầy đủ; phần nội dung đã thu có thể bị cắt. Những gì phần chữ đã thu không nói tới sẽ hiện
+          là “Chưa rõ” hoặc “Không đề cập”, không đoán.
         </p>
       )}
 
-      <DetailBody detail={detail} />
-
-      <section className={styles.compare} aria-labelledby="compare-title">
-        <h2 id="compare-title" className={styles.h2}>
-          So sánh
-        </h2>
-        <div className={styles.compareGrid}>
-          <div>
-            <p className={styles.verdict} data-v={comparison.verdict ?? 'none'}>
-              {verdictSentence(comparison, listing.rent.amount_form, listing.rent.visibility)}
-            </p>
-            <PriceDistributionBar comparison={comparison} targetRent={listing.rent.amount_vnd ?? null} />
-            <p className={styles.fine}>{dataRangeSentence(comparison.data_from, comparison.data_to)}</p>
-          </div>
-          <aside className={styles.similar} aria-labelledby="similar-title">
-            <h3 id="similar-title">Tin giống nhất</h3>
-            {comparison.similar.length ? (
-              <ul>
-                {comparison.similar.map((s) => (
-                  <li key={s.listing_id}>
-                    <Link href={`/tin/${s.listing_id}`}>
-                      <span className="num">{formatShort(s.rent_vnd)}</span>
-                      <span>{s.area_m2 != null ? `${s.area_m2} m²` : 'DT chưa rõ'}</span>
-                      <ArrowUpRight size={14} aria-hidden="true" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className={styles.none}>Chưa có tin tương tự để so.</p>
-            )}
-          </aside>
-        </div>
-      </section>
+      <DetailBody
+        detail={detail}
+        comparison={
+          <section className={styles.compare} aria-labelledby="compare-title">
+            <h2 id="compare-title" className={styles.h2}>
+              So sánh với tin cùng nhóm
+            </h2>
+            <Suspense fallback={<LoadingState message="Đang tải so sánh…" />}>
+              <ComparisonPanel id={id} demo={detail.is_demo} targetRent={listing.rent.amount_vnd ?? null} />
+            </Suspense>
+          </section>
+        }
+      />
     </div>
   );
 }

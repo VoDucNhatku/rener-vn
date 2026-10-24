@@ -4,7 +4,9 @@
 
 Đồ án môn TMG301 — Xử lý ngôn ngữ tự nhiên, đề tài 8: *Trích xuất thông tin bất động sản từ bài đăng mạng xã hội (Real Estate NER)*. Repo này là nơi nhóm xây sản phẩm thật: web app, bộ xử lý dữ liệu và extension Chrome.
 
-> **Trạng thái:** đặc tả đầy đủ, chưa có code. Các thư mục `apps/` đã có README mô tả việc cần làm. Bắt đầu từ [lộ trình](docs/05-delivery/01-lo-trinh-va-phan-cong.md).
+> **Trạng thái:** đã có FastAPI + SQLite + worker/pipeline; web B1 đã nối API cho Trang chủ, Tìm trọ và Chi tiết. Các màn nhóm, extension, Gemini thật và đánh giá cuối chưa được hoàn tất/kiểm chứng trong B1. Xem [hướng dẫn web](apps/web/README.md), [API](apps/api/README.md) và [kế hoạch hoàn thiện](docs/05-delivery/04-ke-hoach-hoan-thien-2026-10-24.md).
+
+Bằng chứng và kết quả kiểm: [Bàn giao B0/B1 ngày 24/10/2026](docs/05-delivery/07-ket-qua-b0-b1-2026-10-24.md).
 
 ---
 
@@ -40,6 +42,22 @@ flowchart LR
     S --> EXT
 ```
 
+## Chạy demo local trên Windows
+
+Cần Python >= 3.11, Node.js >= 20. Từ repo root (đường dẫn có dấu cách dùng được):
+
+```powershell
+python scripts/init-local-env.py
+# Nếu python mặc định quá cũ, đặt $env:RENER_PYTHON tới python.exe >= 3.11.
+.\scripts\dev.ps1 setup
+.\scripts\dev.ps1 seed
+.\scripts\dev.ps1 dev
+```
+
+Mở http://localhost:3000 và http://127.0.0.1:8000/docs. Có thể chạy `api`, `worker`, `web` trong ba terminal thay `dev`. Script tạo env không ghi đè file đang có, không in mật khẩu; API đọc `.env` root, web đọc `apps/web/.env.local`. DB SQLite phát triển dùng đường dẫn tuyệt đối. `SEED_PASSWORD` được CLI đọc từ `.env` hoặc môi trường; không cần truyền mật khẩu trên command line. Thiếu Gemini key/model thì worker chạy **Regex-only**.
+
+`DEMO_MODE=true` xem bộ tự tạo có nhãn; `/tim-tro?demo=false` xem kho thật. Không trộn hai bộ. Kho thật rỗng thì web báo rỗng. Các trang đọc API thật, không fallback mock; trang chủ giữ ví dụ minh họa khi kho rỗng/lỗi. Cấu hình, sinh type và kiểm thử: [README web](apps/web/README.md).
+
 ## Đọc theo thứ tự nào?
 
 | Bạn là | Đọc |
@@ -68,11 +86,11 @@ spec/
   schemas/            JSON Schema: dữ liệu extension gửi lên, kết quả trích xuất
   fixtures/           Bài mẫu tự tạo kèm kết quả mong đợi
 apps/
-  web/                Next.js — chưa code
-  api/                FastAPI + pipeline — chưa code
+  web/                Next.js — B1 nối API cho 3 trang công khai
+  api/                FastAPI + pipeline + worker + tests
   extension/          Chrome MV3 — chưa code, giao bên làm extension
 data/                 Quy ước lưu dữ liệu (dữ liệu thật không commit)
-eval/                 Script đánh giá và kết quả chạy — chưa code
+eval/                 Script đánh giá; không chạy test split trong B1
 ```
 
 ## Công nghệ

@@ -32,11 +32,12 @@ export function Reveal({ children, className, as: Tag = 'div', stagger = 0.08, .
         const items = root.querySelectorAll<HTMLElement>('[data-reveal]');
         // Items already on screen at load stay put — no motion for content the user is reading.
         const below = Array.from(items).filter((el) => el.getBoundingClientRect().top > window.innerHeight * 0.92);
-        gsap.set(below, { autoAlpha: 0, y: 24 });
+        // Never gate content visibility on a scroll callback (screenshots, hidden tabs, JS errors).
+        gsap.set(below, { y: 12 });
         ScrollTrigger.batch(below, {
           start: 'top 88%',
           once: true,
-          onEnter: (batch) => gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger }),
+          onEnter: (batch) => gsap.to(batch, { y: 0, duration: 0.3, ease: 'power3.out', stagger }),
         });
       });
       revert = () => mm.revert();

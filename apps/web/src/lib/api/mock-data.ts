@@ -14,7 +14,7 @@ import type {
   MarketCell,
   Method,
   ReviewItem,
-} from './types';
+} from './prototype-types';
 
 /** Build an evidence span from a quote, using code point offsets like the API does (demo data only). */
 export function ev(text: string, quote: string, label: Label, method: Method = 'human', nth = 0, rule_id?: string): Evidence {

@@ -61,7 +61,8 @@ def search(session: Session, settings: Settings, *, wards=None, types=None, pric
     as_of = session.scalar(select(func.max(Listing.created_at)).join(Post, Post.id == Listing.post_id)
                            .where(_visible(demo)))
     return {"items": [serialize.card(lst, lst.post) for lst in rows], "total": total,
-            "hidden_no_price": hidden_no_price, "data_as_of": iso(as_of), "page": page, "page_size": page_size}
+            "hidden_no_price": hidden_no_price, "data_as_of": iso(as_of), "page": page, "page_size": page_size,
+            "is_demo": demo}
 
 
 def get_visible(session: Session, listing_id: str, *, demo: bool) -> Listing:

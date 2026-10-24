@@ -1,61 +1,57 @@
-import Link from 'next/link';
-import { ArrowUpRight, MapPin } from 'lucide-react';
+'use client';
+import Link, { useLinkStatus } from 'next/link';
+import { ArrowRight, MapPin, Ruler, FileText } from 'lucide-react';
+import { RentDisplay } from '@/components/RentDisplay/RentDisplay';
+import { StatusBadge } from '@/components/StatusBadge/StatusBadge';
 import type { ListingCard as Card } from '@/lib/api/types';
-import { PROPERTY_LABEL, cardVerdict, feeLine, formatDate, rentHeadline } from '@/lib/format';
+import { PROPERTY_LABEL, cardVerdict, feeLine, formatDate } from '@/lib/format';
 import styles from './ListingCard.module.css';
-
 export function ListingCard({ card }: { card: Card }) {
-  const head = rentHeadline(card.rent);
   const verdict = cardVerdict(card);
   return (
-    <Link href={`/tin/${card.listing_id}`} className={styles.card}>
-      <div className={styles.top}>
-        <span className={styles.type}>{PROPERTY_LABEL[card.property_type]}</span>
-        <span className={styles.date}>{card.posted_at ? formatDate(card.posted_at) : 'Chưa rõ ngày đăng'}</span>
-      </div>
-      <div className={styles.badges}>
-        {card.origin === 'extension' ? (
-          <span className={styles.real}>Bài thật · đã che SĐT</span>
-        ) : (
-          <span className={styles.example}>Ví dụ tự tạo</span>
-        )}
-        {!card.text_complete && <span className={styles.partial}>Chữ chưa đầy đủ</span>}
-      </div>
-
-      <p className={[styles.price, head.missing ? styles.missing : ''].join(' ')}>
-        {head.main}
-        {head.suffix && <small>{head.suffix}</small>}
-      </p>
-
-      <p className={styles.place}>
-        <MapPin size={13} aria-hidden="true" />
-        <span>
-          {card.ward_name ?? 'Chưa rõ phường'}
-          {card.landmark ? ` · ${card.landmark}` : ''}
+    <Link href={`/tin/${card.listing_id}?demo=${card.is_demo}`} className={styles.card}>
+      <div className={styles.overview}>
+        <span className={styles.type}>
+          <FileText size={15} aria-hidden="true" />
+          {PROPERTY_LABEL[card.property_type]}
         </span>
-      </p>
-
-      <dl className={styles.facts}>
-        <div>
-          <dt>Diện tích</dt>
-          <dd>{card.area_m2 != null ? `${card.area_m2} m²` : 'Chưa rõ'}</dd>
-        </div>
-        <div className={styles.feeRow}>
-          <dt>Phí</dt>
-          <dd>{feeLine(card.fees)}</dd>
-        </div>
-      </dl>
-
-      <div className={styles.foot}>
-        {verdict ? (
-          <span className={styles.verdict} data-v={card.verdict}>
-            {verdict}
+        <span className={styles.area}>
+          <Ruler size={17} aria-hidden="true" />
+          {card.area_m2 != null ? `${card.area_m2} m²` : 'Chưa rõ diện tích'}
+        </span>
+        <p className={styles.place}>
+          <MapPin size={14} aria-hidden="true" />
+          <span>
+            {card.ward_name ?? 'Chưa rõ phường'}
+            {card.landmark ? ` · ${card.landmark}` : ''}
           </span>
-        ) : (
-          <span className={styles.noVerdict}>Chưa có nhận định</span>
-        )}
-        <ArrowUpRight size={16} className={styles.arrow} aria-hidden="true" />
+        </p>
+      </div>
+      <div className={styles.body}>
+        <div className={styles.badges}>
+          <StatusBadge tone={card.is_demo ? 'neutral' : 'info'}>
+            {card.is_demo ? 'Ví dụ tự tạo' : 'Đã che SĐT'}
+          </StatusBadge>
+          {!card.text_complete && <StatusBadge tone="warning">Chữ chưa đầy đủ</StatusBadge>}
+        </div>
+        <RentDisplay rent={card.rent} />
+        <div className={styles.fees}>
+          <span>Phí riêng</span>
+          <p>{feeLine(card.fees)}</p>
+        </div>
+        <p className={styles.verdict} data-v={card.verdict ?? 'none'}>
+          {verdict ?? 'Chưa có nhận định'}
+        </p>
+        <p className={styles.date}>{card.posted_at ? `Đăng ${formatDate(card.posted_at)}` : 'Chưa rõ ngày đăng'}</p>
+        <div className={styles.foot}>
+          <span>Xem tin &amp; bằng chứng</span>
+          <OpeningIndicator />
+        </div>
       </div>
     </Link>
   );
+}
+function OpeningIndicator() {
+  const { pending } = useLinkStatus();
+  return pending ? <span role="status">Đang mở tin…</span> : <ArrowRight size={16} aria-hidden="true" />;
 }

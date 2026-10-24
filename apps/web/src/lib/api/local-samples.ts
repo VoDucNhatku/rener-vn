@@ -2,10 +2,10 @@ import 'server-only';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { maskPhones } from '../privacy';
-import type { Comparison, Evidence, Label, Listing, ListingCard, ListingDetail, Location, Room } from './types';
+import type { Comparison, Evidence, Label, Listing, ListingCard, ListingDetail, Location, Room } from './prototype-types';
 
-// Posts collected by the team's extension, kept in a git-ignored file (data/ is never committed,
-// see data/README.md). If the file is missing the web shows only the invented demo posts.
+// ARCHIVED PROTOTYPE ONLY: no production API read imports this module.
+// Local extension samples stay git-ignored (see data/README.md).
 // Override the location with RENER_LOCAL_SAMPLES=/path/to/file.json.
 const DEFAULT_FILE = path.resolve(process.cwd(), '../../data/demo/extension-sample.json');
 

@@ -20,6 +20,13 @@
 | **05 Bàn giao** | [Lộ trình và phân công](05-delivery/01-lo-trinh-va-phan-cong.md) | Ai làm gì, đến khi nào |
 | | [Demo và nghiệm thu](05-delivery/02-demo-va-nghiem-thu.md) | Kịch bản demo, các ca phải chạy được |
 | | [Rủi ro và pháp lý](05-delivery/03-rui-ro-va-phap-ly.md) | Rủi ro, cam kết dữ liệu |
+| | [Kế hoạch hoàn thiện 24/10](05-delivery/04-ke-hoach-hoan-thien-2026-10-24.md) | Hiện trạng, S0/B1-UI cho Stitch, backlog B0–B7, lịch và nghiệm thu |
+| | [Prompt nối web với API](05-delivery/05-prompt-noi-web-api.md) | Giao việc cho chat mới thực hiện B0/B1 và kiểm chứng tích hợp |
+| | [Sử dụng bộ thiết kế Stitch](05-delivery/06-huong-dan-su-dung-stitch.md) | Kiểm kê ZIP, mapping màn hình, nội dung cần sửa và cách chuyển sang Next.js |
+| | [Kết quả B0/B1](05-delivery/07-ket-qua-b0-b1-2026-10-24.md) | Môi trường và tích hợp API/SQLite trước khi đổi giao diện |
+| | [Kết quả S0/B1-UI](05-delivery/08-ket-qua-s0-b1-ui-2026-10-24.md) | Ba trang Stitch đã chạy, kiểm hồi quy, ảnh responsive và localhost |
+| **Bối cảnh UI** | [Product](PRODUCT.md) | Người dùng, mục tiêu và nguyên tắc đọc thiết kế |
+| | [Design](DESIGN.md) | Token/component đã chốt, mapping control/API, state và backlog Stitch |
 | **Quyết định** | [ADR](decisions/README.md) | Vì sao chọn như vậy, khi nào xem lại |
 
 Đặc tả máy đọc được: [spec/](../spec/README.md). Khi tài liệu và schema lệch nhau, sửa cả hai trong cùng một PR.

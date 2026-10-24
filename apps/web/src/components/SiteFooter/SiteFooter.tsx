@@ -1,38 +1,36 @@
+'use client';
 import Link from 'next/link';
+import { Info } from 'lucide-react';
+import { useDatasetHref } from '@/lib/useDatasetHref';
 import { Logo } from '../Logo/Logo';
 import styles from './SiteFooter.module.css';
-
 export function SiteFooter() {
+  const scoped = useDatasetHref();
   return (
     <footer className={styles.footer}>
-      <div className={`container ${styles.inner}`}>
-        <div className={styles.brand}>
-          <Logo />
+      <div className="container">
+        <div className={styles.notice}>
+          <Info size={19} aria-hidden="true" />
           <p>
-            Đồ án TMG301 — trích xuất thông tin bất động sản từ bài đăng mạng xã hội. Số liệu là giá chào thuê trong bài đăng đã
-            thu, không phải giá giao dịch.
+            <strong>Lưu ý dữ liệu:</strong> Số liệu là giá chào thuê trong bài đăng, không phải giá giao dịch. Bạn cần
+            kiểm tra thực tế trước khi đặt cọc. Tin có nhãn “Ví dụ tự tạo” thuộc bộ demo.
           </p>
         </div>
-        <nav className={styles.cols} aria-label="Liên kết cuối trang">
-          <div>
-            <h2>Người đi thuê</h2>
-            <Link href="/tim-tro">Tìm trọ</Link>
-            <Link href="/thi-truong">Thị trường</Link>
-            <Link href="/#extension">Cài extension</Link>
-          </div>
-          <div>
-            <h2>Nhóm</h2>
-            <Link href="/team/kho">Kho dữ liệu</Link>
-            <Link href="/team/duyet">Hàng duyệt</Link>
-            <Link href="/team/lab">Lab trích xuất</Link>
-          </div>
-        </nav>
-      </div>
-      <div className={`container ${styles.legal}`}>
-        <span>
-          Bài có nhãn “Ví dụ tự tạo” là bài minh họa. Bài thật chỉ nạp từ máy của nhóm, không đưa lên GitHub, và luôn được che số
-          điện thoại.
-        </span>
+        <div className={styles.row}>
+          <Link href={scoped('/')} aria-label="ReNER-VN — trang chủ">
+            <Logo />
+          </Link>
+          <nav aria-label="Liên kết cuối trang">
+            <Link href={scoped('/tim-tro')}>Tìm trọ</Link>
+            <Link href={scoped('/#cach-hoat-dong')}>Phương pháp</Link>
+            <Link href={scoped('/#nguyen-tac')}>Nguyên tắc dữ liệu</Link>
+          </nav>
+          <p>
+            ReNER-VN · Đồ án TMG301
+            <br />
+            Regex + Gemini/LLM + đối chiếu
+          </p>
+        </div>
       </div>
     </footer>
   );

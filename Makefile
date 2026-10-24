@@ -5,7 +5,7 @@ ifeq ($(OS),Windows_NT)
 PY  := $(API)/.venv/Scripts/python
 endif
 
-.PHONY: setup dev api worker web test seed eval lint check-fixtures
+.PHONY: setup dev api worker web test seed eval lint check-fixtures generate-api test-web test-e2e
 
 setup:
 	python -m venv $(API)/.venv
@@ -39,3 +39,12 @@ eval:
 
 check-fixtures:
 	$(PY) spec/tools/check_fixtures.py
+
+generate-api:
+	cd apps/web && npm run generate:api
+
+test-web:
+	cd apps/web && npm run test:integration
+
+test-e2e:
+	cd apps/web && npm run test:e2e

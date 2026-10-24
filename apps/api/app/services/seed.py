@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import REPO_ROOT
 from app.core.ids import iso, utcnow
+from app.models import IdempotencyKey, Post
 from app.schemas import IngestPost
 from app.services import ingest, users
 
@@ -87,6 +88,12 @@ def seed_demo(session: Session, *, password: str, generated: bool = True) -> dic
         created += r.status == "created"
     if generated:
         for key, text, days in generated_posts():
+            # Generated dates depend on now. Re-seeding must not reuse a key with a
+            # different timestamp or refresh existing demo posts into the market window.
+            seen = session.get(IdempotencyKey, (key, collector.id))
+            existing = session.get(Post, seen.result_ref) if seen and seen.result_ref else None
+            if existing is not None and existing.is_demo:
+                continue
             r = ingest.ingest_post(session, collector, _post(text, key, now - timedelta(days=days)), mode="collect",
                                    contributed=True, is_demo=True)
             created += r.status == "created"
