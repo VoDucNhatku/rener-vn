@@ -18,8 +18,10 @@ export function FilterBar({ wards }: Props) {
   const params = useSearchParams();
   const [pending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const priceParam = params.get('co_gia') === '1';
   const [hasPrice, setHasPrice] = useState(priceParam);
+  useEffect(() => setHydrated(true), []);
   useEffect(() => setHasPrice(priceParam), [priceParam]);
 
   const update = (mutate: (p: URLSearchParams) => void) => {
@@ -45,7 +47,7 @@ export function FilterBar({ wards }: Props) {
     ['gia_min', 'gia_max', 'dt_min', 'dt_max', 'co_gia'].filter((k) => params.get(k)).length;
 
   return (
-    <div className={styles.bar} data-pending={pending || undefined} aria-busy={pending}>
+    <div className={styles.bar} data-pending={pending || undefined} data-hydrated={hydrated} aria-busy={pending}>
       <div className={styles.heading}>
         <h2>
           <SlidersHorizontal size={18} aria-hidden="true" />

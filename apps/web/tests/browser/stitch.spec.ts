@@ -35,6 +35,7 @@ test('range inputs, price checkbox, sort, pagination, back and URL reload retain
   page,
 }) => {
   await page.goto('/tim-tro?demo=true');
+  await expect(page.locator('[data-hydrated="true"]')).toBeVisible();
   await page.getByRole('spinbutton', { name: 'Giá (triệu/tháng) từ' }).fill('2');
   await expect(page).toHaveURL(/gia_min=2/);
   await page.getByRole('spinbutton', { name: 'Giá (triệu/tháng) đến' }).fill('7');
