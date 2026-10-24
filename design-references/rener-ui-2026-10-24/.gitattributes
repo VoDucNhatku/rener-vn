@@ -1,0 +1,6 @@
+# Preserve exported reference bytes across Windows and Unix checkouts.
+# Raw export whitespace is retained rather than reformatted.
+/export/** -text -whitespace
+/rener-ui-export-2026-10-24.zip -text
+/manifest.json text eol=lf
+/README.md text eol=lf
