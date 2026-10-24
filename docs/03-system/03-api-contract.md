@@ -95,10 +95,10 @@ Cấu trúc listing theo [listing-extraction.schema.json](../../spec/schemas/lis
 
 | Method · Path | Tham số chính | Trả về |
 |---|---|---|
-| `GET /listings` | `ward[]`, `type[]`, `price_min`, `price_max`, `area_min`, `area_max`, `has_price`, `sort` (`price_asc`/`price_desc`/`newest`), `page`, `page_size` | `items[]` (thẻ tin), `total`, `hidden_no_price`, `data_as_of` |
+| `GET /listings` | `ward`/`type` key lặp, `price_min`, `price_max`, `area_min`, `area_max`, `has_price`, `sort` (`price_asc`/`price_desc`/`newest`), `page`, `page_size` | `items[]` (thẻ tin), `total`, `hidden_no_price`, `data_as_of` (nullable), `page`, `page_size`, `is_demo` |
 | `GET /listings/{id}` | — | Listing đầy đủ + evidence + `post.text` đã che + link bài + lịch sử giá của cluster |
 | `GET /listings/{id}/comparison` | — | Xem bên dưới |
-| `GET /market/summary` | `ward[]`, `type[]`, `basis` | Bảng phường × loại: `n`, `median`, `p25`, `p75`, `median_per_m2`, `n_per_m2`, `excluded_counts` |
+| `GET /market/summary` | `ward`/`type` key lặp, `basis` | Bảng phường × loại: `n`, `median`, `p25`, `p75`, `median_per_m2`, `n_per_m2`, `excluded_counts` |
 | `GET /stats/overview` | — | Tổng tin, tin đủ điều kiện, ngày cập nhật |
 
 **`GET /listings/{id}/comparison`**
@@ -144,3 +144,9 @@ Khi `status ≠ ok` thì `median`, `p25`, `p75`, `delta_percent`, `verdict` là 
 ## 6. Trạng thái triển khai
 
 Đã có code trong `apps/api` (OpenAPI tại `/docs`). Những điểm khác hoặc thêm so với bản thỏa thuận trên được liệt kê trong [apps/api/README.md](../../apps/api/README.md#ghi-chú-triển-khai-so-với-api-contract).
+
+### Response DTO B1
+
+Listings/detail/comparison/stats đã có response model tại `apps/api/app/schemas/public.py` và schema OpenAPI đầy đủ. Trường extraction tùy chọn giữ nguyên, explicit null không bị bỏ. `posted_at`, `data_as_of`, `updated_at`, `data_from`/`data_to` có thể null. Detail giữ `cluster_id`, `price_history`, `sibling_count`, `is_demo`; card giữ `review_status`, `is_demo`, `text_complete`. Comparison còn trả `message`, `disclaimer` (nullable), `is_demo`; web hiển thị kết luận từ API.
+
+Query thực tế: `?ward=A&ward=B&type=ccmn&type=phong_tro&page=2&page_size=20`. Không dùng key có dấu ngoặc hoặc ghép dấu phẩy. Các endpoint đọc công khai không đòi login; demo flag áp dụng nhất quán: máy chủ tắt demo chỉ trả kho thật, bật demo mặc định chọn demo và `?demo=false` chọn thật. Envelope listings có thêm `is_demo` để kho rỗng vẫn hiển thị đúng chế độ.

@@ -43,7 +43,9 @@ def seed(args) -> None:
     from app.services.seed import seed_demo
     from app.worker.run import drain
 
-    password = args.password or os.environ.get("SEED_PASSWORD", "rener-demo")
+    password = args.password or os.environ.get("SEED_PASSWORD") or get_settings().seed_password
+    if not password:
+        raise SystemExit("Set SEED_PASSWORD in the root .env or process environment before seeding.")
     with session_scope() as session:
         result = seed_demo(session, password=password, generated=not args.no_generated)
     processed = drain(get_settings(), llm=None)

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Menu, Puzzle, X } from 'lucide-react';
 import { Logo } from '../Logo/Logo';
+import { useDatasetHref } from '@/lib/useDatasetHref';
 import styles from './SiteHeader.module.css';
 
 const NAV = [
@@ -14,6 +15,7 @@ const NAV = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const scoped = useDatasetHref();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -29,7 +31,7 @@ export function SiteHeader() {
   return (
     <header className={[styles.header, scrolled ? styles.scrolled : ''].join(' ')}>
       <div className={`container ${styles.inner}`}>
-        <Link href="/" className={styles.brand} aria-label="ReNER-VN — trang chủ">
+        <Link href={scoped('/')} className={styles.brand} aria-label="ReNER-VN — trang chủ">
           <Logo />
         </Link>
 
@@ -37,7 +39,7 @@ export function SiteHeader() {
           {NAV.map((n) => {
             const active = pathname.startsWith(n.href);
             return (
-              <Link key={n.href} href={n.href} className={[styles.link, active ? styles.active : ''].join(' ')} aria-current={active ? 'page' : undefined}>
+              <Link key={n.href} href={scoped(n.href)} className={[styles.link, active ? styles.active : ''].join(' ')} aria-current={active ? 'page' : undefined}>
                 {n.label}
               </Link>
             );
@@ -48,7 +50,7 @@ export function SiteHeader() {
           <Link href="/team/lab" className={styles.ghost}>
             Khu nhóm
           </Link>
-          <Link href="/#extension" className={styles.cta}>
+          <Link href={scoped('/#extension')} className={styles.cta}>
             <Puzzle size={14} strokeWidth={1.75} aria-hidden="true" />
             Cài extension
           </Link>
@@ -68,14 +70,14 @@ export function SiteHeader() {
 
       <div id="mobile-nav" className={[styles.sheet, open ? styles.sheetOpen : ''].join(' ')} hidden={!open}>
         {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={styles.sheetLink}>
+          <Link key={n.href} href={scoped(n.href)} className={styles.sheetLink}>
             {n.label}
           </Link>
         ))}
         <Link href="/team/lab" className={styles.sheetLink}>
           Khu nhóm
         </Link>
-        <Link href="/#extension" className={styles.cta}>
+        <Link href={scoped('/#extension')} className={styles.cta}>
           <Puzzle size={14} aria-hidden="true" /> Cài extension
         </Link>
       </div>

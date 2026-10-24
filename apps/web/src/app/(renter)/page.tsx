@@ -1,11 +1,16 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { ApiState, LoadingState } from '@/components/ApiState/ApiState';
+import { errorMessage } from '@/lib/api/http';
+import { parseDemo, type SearchParams } from '@/features/listings/filters';
+import { HERO_EXAMPLE, FEW_EXAMPLE } from '@/features/landing/illustrations';
 import { ArrowRight, Ban, Divide, Eye, Layers, Sigma, Ruler } from 'lucide-react';
 import { EvidenceHighlighter } from '@/components/EvidenceHighlighter/EvidenceHighlighter';
 import { Reveal } from '@/components/Reveal/Reveal';
 import { ExtensionDemo } from '@/features/landing/ExtensionDemo';
 import { ReadingHero } from '@/features/landing/ReadingHero';
-import { getComparison, getListing, getStatsOverview } from '@/lib/api/client';
-import { ev } from '@/lib/api/mock-data';
+import { getStatsOverview } from '@/lib/api/client';
+import { ev } from '@/features/landing/illustrations';
 import { formatDate } from '@/lib/format';
 import styles from './landing.module.css';
 
@@ -34,35 +39,18 @@ const PRINCIPLES = [
   { n: '04', title: 'Từ ngữ trung tính', body: '“Cao hơn trung vị của nhóm tin so sánh”, không phải “bị hét giá” hay “rẻ, nên thuê”.' },
 ];
 
-export default async function HomePage() {
-  const [detail, comparison, few, fewComparison, stats] = await Promise.all([
-    getListing('l-01'),
-    getComparison('l-01'),
-    getListing('l-10'),
-    getComparison('l-10'),
-    getStatsOverview(),
-  ]);
-  if (!detail || !comparison || !few || !fewComparison) return null;
+export const dynamic = 'force-dynamic';
+
+export default async function HomePage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const demo = parseDemo(await searchParams);
+  const { detail, comparison } = HERO_EXAMPLE;
+  const { detail: few, comparison: fewComparison } = FEW_EXAMPLE;
 
   return (
     <>
-      <ReadingHero detail={detail} comparison={comparison} />
+      <ReadingHero detail={detail} comparison={comparison} demo={demo} />
 
-      {/* Số liệu kho — GET /stats/overview */}
-      <section className={styles.stats} aria-label="Số liệu kho">
-        <div className={`container ${styles.statsInner}`}>
-          <p>
-            <strong className="num">{stats.total_listings}</strong> tin trong kho
-          </p>
-          <p>
-            <strong className="num">{stats.eligible_listings}</strong> tin đủ điều kiện thống kê
-          </p>
-          <p>
-            Cập nhật <strong className="num">{formatDate(stats.updated_at)}</strong>
-          </p>
-          <span className={styles.demoTag}>dữ liệu demo</span>
-        </div>
-      </section>
+      <Suspense fallback={<LoadingState message="Đang tải số liệu kho…" />}><WarehouseStats demo={demo} /></Suspense>
 
       <Reveal as="section" className={`container ${styles.section}`} aria-labelledby="cases-title">
         <header className={styles.head} data-reveal>
@@ -114,7 +102,7 @@ export default async function HomePage() {
             <p className={styles.extNote}>Extension đang được phát triển. Trong lúc chờ, bạn xem trước các trạng thái panel ở bên cạnh.</p>
           </header>
           <div data-reveal>
-            <ExtensionDemo ok={{ detail, comparison }} few={{ detail: few, comparison: fewComparison }} />
+            <ExtensionDemo ok={{ detail, comparison }} few={{ detail: few, comparison: fewComparison }} demo={demo} />
           </div>
         </div>
       </Reveal>
@@ -142,7 +130,7 @@ export default async function HomePage() {
           Tìm phòng theo <em>ngân sách</em> của bạn.
         </h2>
         <div className={styles.ctaRow}>
-          <Link href="/tim-tro" className={styles.ctaPrimary}>
+          <Link href={`/tim-tro${demo === undefined ? '' : `?demo=${demo}`}`} className={styles.ctaPrimary}>
             Mở Tìm trọ <ArrowRight size={16} aria-hidden="true" />
           </Link>
           <Link href="/thi-truong" className={styles.ctaSecondary}>
@@ -152,4 +140,21 @@ export default async function HomePage() {
       </section>
     </>
   );
+}
+
+async function WarehouseStats({ demo }: { demo?: boolean }) {
+  try {
+    const stats = await getStatsOverview(demo);
+    return <section className={styles.stats} aria-label="Số liệu kho"><div className={`container ${styles.statsInner}`}>
+      {stats.total_listings > 0 ? <>
+        <p><strong className="num">{stats.total_listings}</strong> tin trong kho</p>
+        <p><strong className="num">{stats.eligible_listings}</strong> tin đủ điều kiện thống kê</p>
+        <p>{stats.updated_at ? `Cập nhật ${formatDate(stats.updated_at)}` : 'Chưa rõ ngày cập nhật'}</p>
+      </> : <p>Kho chưa có tin. Bạn vẫn có thể xem các ví dụ tự tạo bên trên.</p>}
+      {stats.is_demo && <span className={styles.demoTag}>dữ liệu demo</span>}
+      <Link href={`/tim-tro?demo=${stats.is_demo}`}>Xem kho này →</Link>
+    </div></section>;
+  } catch (error) {
+    return <div className="container"><ApiState title="Chưa tải được số liệu kho" message={errorMessage(error)} /></div>;
+  }
 }

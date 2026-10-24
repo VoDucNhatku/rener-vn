@@ -17,6 +17,7 @@ from app.core.db import get_session
 from app.core.errors import ApiError
 from app.models import User
 from app.schemas import IngestBatch, IngestPost, LabRunRequest, LoginRequest, ReviewDecision, TokenCreate
+from app.schemas.public import Comparison, ErrorResponse, ListingDetail, ListingsResponse, StatsOverview
 from app.services import analyses, evaluation, ingest, lab, listings, market, reviews, team, users
 
 router = APIRouter(prefix="/api/v1")
@@ -83,7 +84,8 @@ def contribute(analysis_id: str, user: User = Depends(current_user), session: Se
 
 # --- renter ------------------------------------------------------------------------
 
-@router.get("/listings", tags=["renter"])
+@router.get("/listings", tags=["renter"], response_model=ListingsResponse, response_model_exclude_unset=True,
+            responses={422: {"model": ErrorResponse}, 503: {"model": ErrorResponse}})
 def list_listings(ward: list[str] = Query(default=[]), type: list[str] = Query(default=[]),
                   price_min: int | None = None, price_max: int | None = None,
                   area_min: float | None = None, area_max: float | None = None, has_price: bool | None = None,
@@ -96,12 +98,14 @@ def list_listings(ward: list[str] = Query(default=[]), type: list[str] = Query(d
                            page_size=page_size, demo=demo)
 
 
-@router.get("/listings/{listing_id}", tags=["renter"])
+@router.get("/listings/{listing_id}", tags=["renter"], response_model=ListingDetail, response_model_exclude_unset=True,
+            responses={404: {"model": ErrorResponse}, 503: {"model": ErrorResponse}})
 def get_listing(listing_id: str, demo: bool = Depends(demo_flag), session: Session = Depends(get_session)):
     return listings.detail(session, listings.get_visible(session, listing_id, demo=demo))
 
 
-@router.get("/listings/{listing_id}/comparison", tags=["renter"])
+@router.get("/listings/{listing_id}/comparison", tags=["renter"], response_model=Comparison,
+            responses={404: {"model": ErrorResponse}, 503: {"model": ErrorResponse}})
 def get_comparison(listing_id: str, user: User | None = Depends(optional_user), demo: bool = Depends(demo_flag),
                    session: Session = Depends(get_session), settings: Settings = Depends(settings_dep)):
     listing = listings.get_for_comparison(session, listing_id, user=user, demo=demo)
@@ -115,7 +119,8 @@ def market_summary(ward: list[str] = Query(default=[]), type: list[str] = Query(
     return market.summary(session, settings, wards=ward, types=type, basis=basis, demo=demo)
 
 
-@router.get("/stats/overview", tags=["renter"])
+@router.get("/stats/overview", tags=["renter"], response_model=StatsOverview,
+            responses={503: {"model": ErrorResponse}})
 def stats_overview(demo: bool = Depends(demo_flag), session: Session = Depends(get_session),
                    settings: Settings = Depends(settings_dep)):
     return market.overview(session, settings, demo=demo)

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Info } from 'lucide-react';
 import { EvidenceHighlighter, evidenceKey } from '@/components/EvidenceHighlighter/EvidenceHighlighter';
 import type { Agreement, Evidence, FeeType, ListingDetail } from '@/lib/api/types';
-import { BASIS_SUFFIX, FEE_LABEL, LABEL_TEXT, PROPERTY_LABEL, feeValue, formatVnd, rentHeadline } from '@/lib/format';
+import { FEE_LABEL, LABEL_TEXT, PROPERTY_LABEL, feeValue, formatVnd, rentHeadline } from '@/lib/format';
 import styles from './DetailBody.module.css';
 
 const AGREEMENT: Record<Agreement, string> = {
@@ -15,14 +15,14 @@ const AGREEMENT: Record<Agreement, string> = {
   human: 'Người duyệt sửa',
 };
 
-const FEE_ORDER: FeeType[] = ['deposit', 'electricity', 'water', 'service', 'internet', 'parking'];
+const FEE_ORDER: FeeType[] = ['deposit', 'electricity', 'water', 'service', 'internet', 'parking', 'other'];
 
 interface Row {
   id: string;
   label: string;
   value: string;
   evidence: Evidence[];
-  agreement?: Agreement;
+  agreement?: Agreement | null;
   missing?: boolean;
   tag: keyof typeof LABEL_TEXT;
 }
@@ -51,7 +51,7 @@ export function DetailBody({ detail }: { detail: ListingDetail }) {
         label: 'Loại phòng',
         value: [
           PROPERTY_LABEL[room.property_type],
-          room.bedrooms ? `${room.bedrooms} phòng ngủ` : null,
+          room.bedrooms != null ? (room.bedrooms === 0 ? 'studio' : `${room.bedrooms} phòng ngủ`) : null,
           room.private_bathroom ? 'khép kín' : null,
           room.mezzanine ? 'có gác' : null,
           room.furnishing === 'full' ? 'full nội thất' : room.furnishing === 'basic' ? 'nội thất cơ bản' : null,
@@ -123,7 +123,7 @@ export function DetailBody({ detail }: { detail: ListingDetail }) {
           </span>
           <span className={[styles.rentValue, rent.missing ? styles.rentMissing : ''].join(' ')}>
             {listing.rent.amount_form === 'exact' && listing.rent.amount_vnd != null ? formatVnd(listing.rent.amount_vnd) : rent.main}
-            {!rent.missing && <small>{BASIS_SUFFIX[listing.rent.basis]}</small>}
+            {!rent.missing && <small>{rent.suffix}</small>}
           </span>
           {listing.rent.includes.length > 0 && (
             <span className={styles.includes}>Đã bao: {listing.rent.includes.map((t) => FEE_LABEL[t].toLowerCase()).join(', ')}</span>
@@ -199,10 +199,10 @@ export function DetailBody({ detail }: { detail: ListingDetail }) {
           </div>
           <EvidenceHighlighter text={post.text} evidence={allEvidence} active={activeKeys} onSelect={onSpan} size="lg" />
           <p className={styles.source}>
-            {[post.source_group_name, 'số điện thoại đã che', detail.origin === 'extension' ? 'bài thật thu bằng extension' : 'bài ví dụ tự tạo']
+            {[post.source_group_name, 'số điện thoại đã che', detail.is_demo ? 'bài ví dụ tự tạo' : null]
               .filter(Boolean)
               .join(' · ')}
-            {!post.text_complete && ' · chữ có thể bị cắt vì chưa mở “Xem thêm”'}
+            {!post.text_complete && ' · văn bản nguồn chưa đầy đủ'}
           </p>
           <ul className={styles.legend} aria-label="Chú thích nhãn">
             {(['PRICE', 'AREA', 'LOC', 'ROOM', 'FEE'] as const).map((l) => (

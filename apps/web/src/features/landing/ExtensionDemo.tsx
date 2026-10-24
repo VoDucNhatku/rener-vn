@@ -19,11 +19,12 @@ const TABS: { id: Panel; label: string }[] = [
 ];
 
 interface Props {
+  demo?: boolean;
   ok: { detail: ListingDetail; comparison: Comparison };
   few: { detail: ListingDetail; comparison: Comparison };
 }
 
-export function ExtensionDemo({ ok, few }: Props) {
+export function ExtensionDemo({ ok, few, demo }: Props) {
   const [panel, setPanel] = useState<Panel>('result');
   const current = panel === 'insufficient' ? few : ok;
   const { listing, post } = current.detail;
@@ -137,8 +138,8 @@ export function ExtensionDemo({ ok, few }: Props) {
                         </p>
                       )}
                       <p className={styles.fine}>{dataRangeSentence(c.data_from, c.data_to)}</p>
-                      <Link href={`/tin/${listing.listing_id}`} className={styles.webLink}>
-                        Xem trên web <ArrowUpRight size={14} aria-hidden="true" />
+                      <Link href={`/tim-tro${demo === undefined ? '' : `?demo=${demo}`}`} className={styles.webLink}>
+                        Tìm tin trong kho <ArrowUpRight size={14} aria-hidden="true" />
                       </Link>
                     </>
                   )}

@@ -1,8 +1,11 @@
+'use client';
 import Link from 'next/link';
+import { useDatasetHref } from '@/lib/useDatasetHref';
 import { Logo } from '../Logo/Logo';
 import styles from './SiteFooter.module.css';
 
 export function SiteFooter() {
+  const scoped = useDatasetHref();
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.inner}`}>
@@ -16,9 +19,9 @@ export function SiteFooter() {
         <nav className={styles.cols} aria-label="Liên kết cuối trang">
           <div>
             <h2>Người đi thuê</h2>
-            <Link href="/tim-tro">Tìm trọ</Link>
-            <Link href="/thi-truong">Thị trường</Link>
-            <Link href="/#extension">Cài extension</Link>
+            <Link href={scoped('/tim-tro')}>Tìm trọ</Link>
+            <Link href={scoped('/thi-truong')}>Thị trường</Link>
+            <Link href={scoped('/#extension')}>Cài extension</Link>
           </div>
           <div>
             <h2>Nhóm</h2>

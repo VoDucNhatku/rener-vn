@@ -1,0 +1,4 @@
+.nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4); margin-block: var(--s-8); color: var(--ink-2); }
+.nav div { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.nav a { display: inline-flex; padding: 10px 16px; border: 1px solid var(--border-strong); border-radius: var(--r-md); color: var(--ink); }
+.nav a:hover { background: var(--hover); }

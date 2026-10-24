@@ -10,17 +10,9 @@ import styles from './FilterBar.module.css';
 
 interface Props {
   wards: string[];
-  /** Number of local posts from the team's extension; the source filter shows only when > 0. */
-  localCount: number;
 }
 
-const SOURCES = [
-  { value: '', label: 'Tất cả' },
-  { value: 'that', label: 'Bài thật từ extension' },
-  { value: 'vidu', label: 'Bài ví dụ' },
-];
-
-export function FilterBar({ wards, localCount }: Props) {
+export function FilterBar({ wards }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -30,6 +22,8 @@ export function FilterBar({ wards, localCount }: Props) {
   const update = (mutate: (p: URLSearchParams) => void) => {
     const next = new URLSearchParams(params.toString());
     mutate(next);
+    next.delete('trang');
+    next.delete('nguon');
     startTransition(() => router.replace(`${pathname}${next.size ? `?${next}` : ''}`, { scroll: false }));
   };
 
@@ -42,9 +36,8 @@ export function FilterBar({ wards, localCount }: Props) {
 
   const wardSel = params.getAll('phuong');
   const typeSel = params.getAll('loai');
-  const source = params.get('nguon') ?? '';
   const activeCount =
-    wardSel.length + typeSel.length + ['gia_min', 'gia_max', 'dt_min', 'dt_max', 'co_gia', 'nguon'].filter((k) => params.get(k)).length;
+    wardSel.length + typeSel.length + ['gia_min', 'gia_max', 'dt_min', 'dt_max', 'co_gia'].filter((k) => params.get(k)).length;
 
   return (
     <div className={styles.bar} data-pending={pending || undefined}>
@@ -53,23 +46,6 @@ export function FilterBar({ wards, localCount }: Props) {
       </button>
 
       <div className={[styles.groups, open ? styles.groupsOpen : ''].join(' ')}>
-        {localCount > 0 && (
-          <fieldset className={styles.group}>
-            <legend>Nguồn bài</legend>
-            <div className={styles.chips}>
-              {SOURCES.map((s) => (
-                <Chip
-                  key={s.value}
-                  on={source === s.value}
-                  onClick={() => update((p) => (s.value ? p.set('nguon', s.value) : p.delete('nguon')))}
-                >
-                  {s.value === 'that' ? `${s.label} · ${localCount}` : s.label}
-                </Chip>
-              ))}
-            </div>
-          </fieldset>
-        )}
-
         <fieldset className={styles.group}>
           <legend>Phường</legend>
           <div className={styles.chips}>
@@ -119,7 +95,7 @@ export function FilterBar({ wards, localCount }: Props) {
             <ChevronDown size={14} aria-hidden="true" />
           </label>
           {activeCount > 0 && (
-            <button type="button" className={styles.clear} onClick={() => update((p) => [...p.keys()].forEach((k) => k !== 'sap_xep' && p.delete(k)))}>
+            <button type="button" className={styles.clear} onClick={() => update((p) => [...p.keys()].forEach((k) => !['sap_xep', 'demo'].includes(k) && p.delete(k)))}>
               <X size={13} aria-hidden="true" /> Xóa lọc
             </button>
           )}
@@ -156,16 +132,25 @@ function RangeField({
   const [min, setMin] = useState(params.get(minKey) ?? '');
   const [max, setMax] = useState(params.get(maxKey) ?? '');
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const draft = useRef({ min, max });
 
   // Keep inputs in sync when the URL changes elsewhere (e.g. "Xóa lọc").
   useEffect(() => {
     setMin(params.get(minKey) ?? '');
     setMax(params.get(maxKey) ?? '');
+    draft.current = { min: params.get(minKey) ?? '', max: params.get(maxKey) ?? '' };
   }, [params, minKey, maxKey]);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const commit = (key: string, value: string) => {
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => update((p) => (value ? p.set(key, value) : p.delete(key))), 450);
+    draft.current = { ...draft.current, [key === minKey ? 'min' : 'max']: value };
+    timer.current = setTimeout(() => update((p) => {
+      for (const [k, v] of [[minKey, draft.current.min], [maxKey, draft.current.max]]) {
+        if (v) p.set(k, v); else p.delete(k);
+      }
+    }), 450);
   };
 
   return (

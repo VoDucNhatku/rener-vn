@@ -1,109 +1,19 @@
-// Thin data layer. Each function maps 1:1 to an endpoint in docs/03-system/03-api-contract.md.
-// Today it answers from demo data; swap the bodies for the generated OpenAPI client
-// (NEXT_PUBLIC_API_URL) without changing the call sites.
+import 'server-only';
+import { cache } from 'react';
+import { ApiError, createRenerApi } from './http';
+import { adaptDetail, adaptListings } from './adapters';
+import { collectCatalog } from './catalog';
 
-import {
-  CARDS,
-  COMPARISONS,
-  DETAILS,
-  LAB,
-  MARKET,
-  MARKET_RANGE,
-  OVERVIEW,
-  REVIEWS,
-} from './mock-data';
-import { loadLocalSamples } from './local-samples';
-import type {
-  Comparison,
-  DataOrigin,
-  LabResult,
-  ListingDetail,
-  ListingsResponse,
-  MarketSummary,
-  PropertyType,
-  ReviewItem,
-  StatsOverview,
-} from './types';
+export type ListingQuery = NonNullable<import('./generated').paths['/api/v1/listings']['get']['parameters']['query']>;
+const api = () => createRenerApi(process.env.API_BASE_URL ?? 'http://127.0.0.1:8000/api/v1',
+  Number(process.env.API_TIMEOUT_MS) > 0 ? Number(process.env.API_TIMEOUT_MS) : 8000);
 
-export interface ListingQuery {
-  ward?: string[];
-  type?: PropertyType[];
-  price_min?: number;
-  price_max?: number;
-  area_min?: number;
-  area_max?: number;
-  has_price?: boolean;
-  origin?: DataOrigin;
-  sort?: 'price_asc' | 'price_desc' | 'newest';
-}
-
-// Local extension posts (git-ignored, may be absent) first, then the invented examples.
-const allCards = () => [...loadLocalSamples().cards, ...CARDS];
-
-/** GET /listings — filtering/sorting happens in the API; the mock imitates it. */
-export async function getListings(q: ListingQuery): Promise<ListingsResponse> {
-  const priceFilter = q.price_min != null || q.price_max != null || q.has_price;
-  let items = allCards().filter((c) => {
-    if (q.origin && c.origin !== q.origin) return false;
-    if (q.ward?.length && !q.ward.includes(c.ward_name ?? '')) return false;
-    if (q.type?.length && !q.type.includes(c.property_type)) return false;
-    if (q.area_min != null && (c.area_m2 == null || c.area_m2 < q.area_min)) return false;
-    if (q.area_max != null && (c.area_m2 == null || c.area_m2 > q.area_max)) return false;
-    return true;
-  });
-  const hasExactPrice = (c: (typeof CARDS)[number]) => c.rent.amount_form === 'exact' && c.rent.amount_vnd != null;
-  // Listings without an exact price drop out when any price filter is on; the API reports how many.
-  const noPriceHidden = priceFilter ? items.filter((c) => !hasExactPrice(c)).length : 0;
-  if (priceFilter) {
-    items = items.filter((c) => {
-      if (!hasExactPrice(c)) return false;
-      const v = c.rent.amount_vnd as number;
-      if (q.price_min != null && v < q.price_min) return false;
-      if (q.price_max != null && v > q.price_max) return false;
-      return true;
-    });
-  }
-  const sorted = [...items].sort((a, b) => {
-    if (q.sort === 'price_asc' || q.sort === 'price_desc') {
-      const av = a.rent.amount_vnd ?? Number.POSITIVE_INFINITY;
-      const bv = b.rent.amount_vnd ?? Number.POSITIVE_INFINITY;
-      return q.sort === 'price_asc' ? av - bv : bv - av;
-    }
-    // Unknown post time sorts last.
-    return (b.posted_at ?? '').localeCompare(a.posted_at ?? '');
-  });
-  return { items: sorted, total: sorted.length, hidden_no_price: noPriceHidden, data_as_of: OVERVIEW.updated_at };
-}
-
-export async function getListing(id: string): Promise<ListingDetail | null> {
-  return loadLocalSamples().details[id] ?? DETAILS[id] ?? null;
-}
-
-export async function getComparison(id: string): Promise<Comparison | null> {
-  return loadLocalSamples().comparisons[id] ?? COMPARISONS[id] ?? null;
-}
-
-export async function getMarketSummary(): Promise<MarketSummary> {
-  return { cells: MARKET, ...MARKET_RANGE };
-}
-
-export async function getStatsOverview(): Promise<StatsOverview> {
-  return OVERVIEW;
-}
-
-export async function runLab(): Promise<LabResult> {
-  return LAB;
-}
-
-export async function getReviews(): Promise<ReviewItem[]> {
-  return REVIEWS;
-}
-
-export function getWards(): string[] {
-  return Array.from(new Set(allCards().map((c) => c.ward_name).filter(Boolean))) as string[];
-}
-
-/** How many local extension posts are loaded; 0 when the git-ignored file is absent. */
-export function localSampleCount(): number {
-  return loadLocalSamples().cards.length;
-}
+export async function getListings(query: ListingQuery = {}) { return adaptListings(await api().listings(query)); }
+// Request-scoped deduplication for metadata/page. HTTP reads always use no-store.
+export const getListing = cache(async (id: string, demo?: boolean) => {
+  try { return adaptDetail(await api().listing(id, demo)); }
+  catch (error) { if (error instanceof ApiError && error.status === 404) return null; throw error; }
+});
+export const getComparison = (id: string, demo?: boolean) => api().comparison(id, demo);
+export const getStatsOverview = (demo?: boolean) => api().overview(demo);
+export const getCatalog = cache((demo?: boolean) => collectCatalog((page) => api().listings({ demo, page, page_size: 100 })));

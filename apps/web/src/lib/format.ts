@@ -19,12 +19,14 @@ export function formatPercent(v: number): string {
   return `${Math.abs(v).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}%`;
 }
 
-export function formatDate(iso: string): string {
+export function formatDate(iso: string | null | undefined): string {
+  if (!iso || Number.isNaN(Date.parse(iso))) return 'Chưa rõ ngày';
   const d = new Date(iso);
   return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Asia/Ho_Chi_Minh' });
 }
 
-export function formatDayMonth(iso: string): string {
+export function formatDayMonth(iso: string | null | undefined): string {
+  if (!iso || Number.isNaN(Date.parse(iso))) return 'Chưa rõ ngày';
   const d = new Date(iso);
   return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' });
 }
@@ -99,18 +101,19 @@ export const BASIS_SUFFIX: Record<Rent['basis'], string> = {
 };
 
 /** Headline price for cards and panels. Returns null text when there is no number to show. */
-export function rentHeadline(rent: Pick<Rent, 'visibility' | 'amount_form' | 'amount_vnd' | 'min_vnd' | 'max_vnd' | 'basis'>): {
+export function rentHeadline(rent: Pick<Rent, 'visibility' | 'amount_form' | 'amount_vnd' | 'min_vnd' | 'max_vnd' | 'basis' | 'period'>): {
   main: string;
   suffix: string;
   missing: boolean;
 } {
+  const suffix = `${rent.period === 'month' ? '/tháng' : rent.period === 'day' ? '/ngày' : ''}${rent.basis === 'per_person' ? '/người' : rent.basis === 'per_unit' ? '/phòng' : ''}`;
   if (rent.visibility === 'hidden_explicit') return { main: 'Bài không công khai giá', suffix: '', missing: true };
   if (rent.amount_form === 'exact' && rent.amount_vnd != null)
-    return { main: formatShort(rent.amount_vnd), suffix: BASIS_SUFFIX[rent.basis], missing: false };
+    return { main: formatShort(rent.amount_vnd), suffix, missing: false };
   if (rent.amount_form === 'starting_from' && rent.min_vnd != null)
-    return { main: `Từ ${formatShort(rent.min_vnd)}`, suffix: BASIS_SUFFIX[rent.basis], missing: false };
+    return { main: `Từ ${formatShort(rent.min_vnd)}`, suffix, missing: false };
   if (rent.amount_form === 'range' && rent.min_vnd != null && rent.max_vnd != null)
-    return { main: `${formatShort(rent.min_vnd)}–${formatShort(rent.max_vnd)}`, suffix: BASIS_SUFFIX[rent.basis], missing: false };
+    return { main: `${formatShort(rent.min_vnd)}–${formatShort(rent.max_vnd)}`, suffix, missing: false };
   return { main: 'Chưa có giá', suffix: '', missing: true };
 }
 
@@ -134,7 +137,8 @@ function areaBandText(band: string | null): string {
 
 /** Sentence from docs/02-data/05-gop-trung-va-thong-ke.md §5. */
 export function verdictSentence(c: Comparison, rentForm?: Rent['amount_form'], visibility?: Rent['visibility']): string {
-  const type = PROPERTY_LABEL[c.criteria.property_type].toLowerCase();
+  if (c.message) return c.message;
+  const type = PROPERTY_LABEL[c.criteria.property_type ?? 'unknown'].toLowerCase();
   const band = areaBandText(c.criteria.area_band);
   const group = `${c.n} tin ${type}${band ? ` ${band}` : ''} cùng phường`;
   if (c.status === 'ok' && c.verdict && c.delta_percent != null) {
@@ -160,6 +164,7 @@ export const REASON_TEXT: Record<ComparisonReason, string> = {
   area_missing_broad_group: 'Thiếu diện tích, chỉ so được với nhóm rộng',
 };
 
-export function dataRangeSentence(from: string, to: string): string {
+export function dataRangeSentence(from: string | null, to: string | null): string {
+  if (!from || !to) return 'Chưa có khoảng thời gian dữ liệu. Đây là giá chào thuê, không phải giá giao dịch.';
   return `Dữ liệu từ ${formatDate(from)} đến ${formatDate(to)}. Đây là giá chào thuê trong bài đăng đã thu, không phải giá giao dịch.`;
 }

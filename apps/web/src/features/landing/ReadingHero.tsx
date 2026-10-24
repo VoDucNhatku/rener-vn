@@ -13,6 +13,7 @@ const STEPS = ['Bài gốc', 'Gán nhãn', 'Chuẩn hóa', 'So sánh'];
 interface Props {
   detail: ListingDetail;
   comparison: Comparison;
+  demo?: boolean;
 }
 
 /**
@@ -20,7 +21,7 @@ interface Props {
  * Everything renders in its final state first; GSAP only adds motion on wide screens
  * without prefers-reduced-motion, so content stays readable with JS or motion off.
  */
-export function ReadingHero({ detail, comparison }: Props) {
+export function ReadingHero({ detail, comparison, demo }: Props) {
   const { listing, post } = detail;
   const rootRef = useRef<HTMLElement>(null);
   const [step, setStep] = useState(0);
@@ -155,7 +156,7 @@ export function ReadingHero({ detail, comparison }: Props) {
                 đâu so với các tin tương tự.
               </p>
               <div className={styles.ctas}>
-                <Link href="/tim-tro" className={styles.primary}>
+                <Link href={`/tim-tro${demo === undefined ? '' : `?demo=${demo}`}`} className={styles.primary}>
                   Tìm phòng <ArrowRight size={16} aria-hidden="true" />
                 </Link>
                 <Link href="#extension" className={styles.secondary}>

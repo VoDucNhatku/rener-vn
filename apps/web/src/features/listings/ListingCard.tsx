@@ -1,4 +1,5 @@
-import Link from 'next/link';
+'use client';
+import Link, { useLinkStatus } from 'next/link';
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import type { ListingCard as Card } from '@/lib/api/types';
 import { PROPERTY_LABEL, cardVerdict, feeLine, formatDate, rentHeadline } from '@/lib/format';
@@ -8,14 +9,14 @@ export function ListingCard({ card }: { card: Card }) {
   const head = rentHeadline(card.rent);
   const verdict = cardVerdict(card);
   return (
-    <Link href={`/tin/${card.listing_id}`} className={styles.card}>
+    <Link href={`/tin/${card.listing_id}?demo=${card.is_demo}`} className={styles.card}>
       <div className={styles.top}>
         <span className={styles.type}>{PROPERTY_LABEL[card.property_type]}</span>
         <span className={styles.date}>{card.posted_at ? formatDate(card.posted_at) : 'Chưa rõ ngày đăng'}</span>
       </div>
       <div className={styles.badges}>
-        {card.origin === 'extension' ? (
-          <span className={styles.real}>Bài thật · đã che SĐT</span>
+        {!card.is_demo ? (
+          <span className={styles.real}>Đã che SĐT</span>
         ) : (
           <span className={styles.example}>Ví dụ tự tạo</span>
         )}
@@ -54,8 +55,13 @@ export function ListingCard({ card }: { card: Card }) {
         ) : (
           <span className={styles.noVerdict}>Chưa có nhận định</span>
         )}
-        <ArrowUpRight size={16} className={styles.arrow} aria-hidden="true" />
+        <OpeningIndicator />
       </div>
     </Link>
   );
+}
+
+function OpeningIndicator() {
+  const { pending } = useLinkStatus();
+  return pending ? <span role="status">Đang mở tin…</span> : <ArrowUpRight size={16} className={styles.arrow} aria-hidden="true" />;
 }

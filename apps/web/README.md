@@ -1,52 +1,66 @@
 # apps/web — Next.js
 
-**Trạng thái:** chưa code. Phụ trách chính: TV3.
+B1 đã nối `/`, `/tim-tro`, `/tin/[id]` với FastAPI/SQLite. Giữ visual prototype để kiểm dữ liệu; chuyển Stitch là gói B1-UI riêng. Các link Thị trường/khu nhóm vẫn dẫn tới phần chưa triển khai trong lượt này.
 
-## Cần xây
+## Chạy trên Windows
 
-| Phần | Đặc tả |
-|---|---|
-| Màn hình, trạng thái, nội dung | [Tính năng và màn hình](../../docs/01-product/03-tinh-nang-va-man-hinh.md) |
-| Người dùng đi qua những bước nào | [Hành trình J1–J5](../../docs/01-product/02-hanh-trinh-nguoi-dung.md) |
-| Dữ liệu lấy từ đâu | [API contract](../../docs/03-system/03-api-contract.md) |
-| Ý nghĩa từng trường | [Từ điển dữ liệu](../../docs/02-data/01-tu-dien-du-lieu.md) |
+Cần Node.js 20+ và Python 3.11+ cho backend/generator. Từ repo root:
 
-## Cấu trúc dự kiến
-
-```text
-apps/web/src/
-  app/
-    (renter)/          page.tsx (/), tim-tro/, tin/[id]/, thi-truong/, phan-tich/[id]/
-    (team)/team/       kho/, duyet/, duyet/[id]/, lab/, danh-gia/, cai-dat/
-    dang-nhap/
-  features/
-    listings/          thẻ tin, bộ lọc (state trên URL)
-    listing-detail/    vùng giá/phí, bôi màu nhãn, nhóm so sánh
-    market/
-    review/
-    lab/               3 hàng bôi màu Regex/LLM/Gold, bảng BIO
-    eval/
-  components/          ui dùng chung: Badge, Table, EmptyState, ErrorState, PriceDistributionBar, EvidenceHighlighter
-  lib/api/             client sinh từ OpenAPI của FastAPI — không sửa tay
-  styles/tokens.css    màu, chữ, khoảng cách
+```powershell
+python scripts/init-local-env.py
+# Nếu python mặc định < 3.11, đặt $env:RENER_PYTHON tới python.exe >= 3.11 trước setup.
+.\scripts\dev.ps1 setup
+.\scripts\dev.ps1 seed
 ```
 
-## Thành phần quan trọng nhất
+Ba terminal riêng, tại repo root:
 
-**`EvidenceHighlighter`**: nhận `text` và danh sách `evidence {start, end, label}` (vị trí code point), đổi sang chỉ số UTF-16 của JavaScript, bôi màu và **ghi chữ nhãn** cạnh mỗi đoạn. Bấm một trường ở bảng giá/phí thì đoạn tương ứng sáng lên. Test bằng [spec/fixtures](../../spec/fixtures/README.md), gồm một ca có emoji.
+```powershell
+.\scripts\dev.ps1 api
+.\scripts\dev.ps1 worker
+.\scripts\dev.ps1 web
+```
 
-**`PriceDistributionBar`**: thanh P25–trung vị–P75 với chấm "tin này"; khi `status ≠ ok` thì không vẽ số, chỉ hiện lý do.
+Web: http://localhost:3000 · API: http://127.0.0.1:8000/docs. Có thể dùng `.\scripts\dev.ps1 dev` để chạy chung; API/worker của lệnh này chạy ẩn và được dừng khi web thoát. Lệnh trả lỗi nếu native command thất bại; đường dẫn repo có dấu cách được hỗ trợ.
 
-## Nguyên tắc
+Next chỉ đọc `apps/web/.env.local` khi chạy từ `apps/web`, **không tự đọc `.env` ở repo root**:
 
-- Không tự tính trung vị hay điều kiện so sánh ở frontend; chỉ hiển thị dữ liệu API trả.
-- Bộ lọc nằm trên URL; đổi kiểu hiển thị giữ bộ lọc.
-- Mỗi màn có đủ trạng thái đang tải / rỗng / lỗi / thành công; dùng được bằng bàn phím; hiển thị được trên điện thoại; tương phản đạt WCAG AA.
-- Vai trò người dùng chỉ quyết định hiển thị menu; quyền thật do API kiểm.
-- Trước khi coi là xong: chụp màn hình từng trạng thái và xem lại.
+```dotenv
+API_BASE_URL=http://127.0.0.1:8000/api/v1
+API_TIMEOUT_MS=8000
+```
 
-## Bản giao diện thử (nhánh `feat/web-ui-prototype`)
+Tên chuẩn là `API_BASE_URL`, chỉ dùng phía server. `NEXT_PUBLIC_API_BASE_URL`/`NEXT_PUBLIC_API_URL` cũ không dùng. Secret/Gemini key không thuộc cấu hình web. API/worker đọc `.env` root. Script khởi tạo chỉ ghi khi file chưa tồn tại, dùng secret ngẫu nhiên và DB phát triển riêng với đường dẫn tuyệt đối; hãy kiểm cấu hình hiện có khi script giữ file cũ.
 
-Chạy: `npm install` rồi `npm run dev` trong `apps/web`, mở http://localhost:3000. Chưa gọi API thật; dữ liệu lấy từ `src/lib/api/mock-data.ts` (bài **ví dụ tự tạo**).
+## Luồng dữ liệu
 
-**Bài thật từ extension (chỉ trên máy, không commit).** Nếu có file `data/demo/extension-sample.json` (thư mục `data/` nằm trong `.gitignore`), web nạp thêm các bài đó và gắn nhãn "Bài thật · đã che SĐT"; lọc bằng `?nguon=that`. Mỗi phần tử gồm `post` theo [ingest-post.schema.json](../../spec/schemas/ingest-post.schema.json) và `labels` là đoạn trích nguyên văn do người gán; đoạn không tìm thấy trong chữ bài bị bỏ. Web che số điện thoại thêm một lần khi nạp (`src/lib/privacy.ts`). Không có file thì web chỉ hiện bài ví dụ. Đổi đường dẫn bằng biến môi trường `RENER_LOCAL_SAMPLES`.
+- Server Components → `lib/api/client.ts` → transport `openapi-fetch` + `generated.ts` → FastAPI. `adapters.ts` là điểm đổi DTO sang shape UI; component không biết HTTP.
+- `npm run generate:api` xuất OpenAPI trực tiếp từ app Python, không cần API đang chạy/DB kết nối; `openapi-typescript` sinh `src/lib/api/generated.ts`. Không sửa tay file sinh. Mặc định dùng `apps/api/.venv`; có thể đặt `RENER_PYTHON`.
+- Mọi HTTP read có timeout và `cache: no-store`. Chỉ listing 404 gọi `notFound`; comparison lỗi nằm riêng cạnh nội dung tin, có Thử lại. Metadata được resolve trước streaming; không đặt route loading boundary bao ngoài bước kiểm listing để giữ HTTP 404. Loading danh sách, pending khi mở card và loading comparison vẫn có.
+- `types.ts` đặt tên UI cho DTO sinh; `http.ts`, catalog, pagination, `ComparisonPanel`, `DetailBody` và evidence dùng lại được khi chuyển visual Stitch.
+- Không fallback mock, không đọc `data/demo/extension-sample.json`. `mock-data.ts`, `prototype-types.ts` và `local-samples.ts` là nguồn prototype cũ; **chỉ** `features/landing/illustrations.ts` dùng mock cho ví dụ tự tạo có nhãn. Không gọi API bằng ID minh họa và không dùng chúng để lấp lỗi kho.
+- `is_demo` quyết định badge; dữ liệu thật không bị gán thành nguồn extension. `DEMO_MODE=true` trên API: mặc định bộ demo, `?demo=false` chọn kho thật; `DEMO_MODE=false`: chỉ kho thật, kể cả khi query yêu cầu demo. Link card/similar/quay lại và điều hướng công khai giữ lựa chọn.
+- URL web giữ tiếng Việt: `phuong`/`loai` lặp, `gia_min`/`gia_max` tính triệu, `dt_min`/`dt_max`, `co_gia=1`, `sap_xep`, `trang`. Giá đổi sang đồng đúng một lần ở `parseFilters`. API nhận `ward=A&ward=B&type=ccmn&type=phong_tro`, không phải key `ward[]` hay chuỗi dấu phẩy.
+- API lọc/sort/page, trả `hidden_no_price` và tổng. Đổi lọc/sort về trang đầu. Danh mục phường lấy **tất cả** các trang không lọc cùng dataset, chỉ tái sử dụng trong request, không suy từ market summary.
+- Nullable dates/giá/phí giữ nguyên; không tự tính thống kê, cộng tiền/phí hay nhân giá/người. Evidence dùng Unicode code points; thao tác bằng chuột/bàn phím.
+
+## Kiểm tra
+
+Trong `apps/web`:
+
+```powershell
+npm install
+npm run generate:api
+npm run typecheck
+npm run test:integration
+npm run build
+npx playwright install chromium  # chỉ khi máy chưa có browser tương thích
+npm run test:e2e
+npm run start                  # production tại :3000
+```
+
+Build không fetch API lúc prerender (ba route động). Khi sửa nguồn rồi build lại, dừng web đang dùng cùng `.next`, sau đó chạy lại `npm run start`.
+
+E2E tự chạy API thật tại **18000**, web production tại **3001**, seed DB trong thư mục tạm, xử lý Regex và duyệt bằng service hợp lệ. Endpoint điều khiển lỗi chỉ nằm trong test harness, không tồn tại ở app thật. Không dùng/ghi DB của người dùng. Test cần bản build mới; các port này phải trống. Ảnh và trace nằm ở `.tmp/b1-evidence` và `.tmp/b1-browser-results` (git ignored).
+
+`next lint --help` vẫn có trong Next 15.5.28; repo chưa cấu hình/cài ESLint, nên không ghi `npm run lint` là kiểm tra đã đạt. Không đổi toolchain trong B1.
