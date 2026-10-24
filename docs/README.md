@@ -20,6 +20,7 @@
 | **05 Bàn giao** | [Lộ trình và phân công](05-delivery/01-lo-trinh-va-phan-cong.md) | Ai làm gì, đến khi nào |
 | | [Demo và nghiệm thu](05-delivery/02-demo-va-nghiem-thu.md) | Kịch bản demo, các ca phải chạy được |
 | | [Rủi ro và pháp lý](05-delivery/03-rui-ro-va-phap-ly.md) | Rủi ro, cam kết dữ liệu |
+| **06 Tham chiếu UI** | [Kết luận và bộ tham chiếu](06-ui-reference/README.md) | Màn đã có, kết luận đã rút lại, HTML/ảnh và giới hạn chưa kiểm |
 | **Quyết định** | [ADR](decisions/README.md) | Vì sao chọn như vậy, khi nào xem lại |
 
 Đặc tả máy đọc được: [spec/](../spec/README.md). Khi tài liệu và schema lệch nhau, sửa cả hai trong cùng một PR.

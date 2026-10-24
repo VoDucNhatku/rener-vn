@@ -1,0 +1,234 @@
+{
+  "date": "2026-10-24",
+  "name": "ReNER UI Reference",
+  "source_archive_sha256": "a76f1043b9a92d959c4b15c8bf047451fa9db37c0d8d47bcc597e55f04aa4766",
+  "packaged_archive": "rener-ui-export-2026-10-24.zip",
+  "packaged_archive_sha256": "e48f25a2771ce97a6b227abf87b6377e0507cc735be1913fa00108c4bc60f2d4",
+  "normalization": "Archive filename and top-level export directory renamed; exported file bytes unchanged.",
+  "counts": {
+    "html": 13,
+    "png_files": 17,
+    "valid_png_signatures": 13,
+    "invalid_png_files": 4,
+    "design_documents": 1
+  },
+  "files": [
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_ch_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_ch_rener/code.html",
+      "bytes": 38354,
+      "sha256": "587ea4ffdecafd70c895d1b0686e50571d6cdf863e0d0b2bbb5619c6ce4b5875",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_ch_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_ch_rener/screen.png",
+      "bytes": 389950,
+      "sha256": "7830fcc7bff727ab8e0a6b355dfc63c71c0e526a74045d725ba8bf82cfb905c5",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_2_t_m_tr_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_2_t_m_tr_rener/code.html",
+      "bytes": 46492,
+      "sha256": "7734b4d12a245bcc71fb6fee411c799452232e7571cc7947095efef2fa830558",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_2_t_m_tr_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_2_t_m_tr_rener/screen.png",
+      "bytes": 28,
+      "sha256": "6c9a02e2605929162392587c714f045251761b8a72c4bced6d4cbc2e4303ef8b",
+      "png_signature_valid": false
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_3_chi_ti_t_ph_ng_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_3_chi_ti_t_ph_ng_rener/code.html",
+      "bytes": 52262,
+      "sha256": "8b56035ea3c4dfebc0970178d70cb228229f67a89da0ef4c62f157a8226a012a",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_3_chi_ti_t_ph_ng_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_3_chi_ti_t_ph_ng_rener/screen.png",
+      "bytes": 688815,
+      "sha256": "81be6e23f5c3391c40086885040ab9bf4f499a29cfb8cc068f49a1c471f6b7f4",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_4_th_tr_ng_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_4_th_tr_ng_rener/code.html",
+      "bytes": 42222,
+      "sha256": "1010921a5b3cac24cfd5e869dca2513bab797bf8ea815d28b1256031c964713a",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_4_th_tr_ng_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_4_th_tr_ng_rener/screen.png",
+      "bytes": 907217,
+      "sha256": "77fa76f2b04d44df381dac1bdcdeefd51d77edbfab24951630d8f7d722c421f1",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_6_ng_nh_p_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_6_ng_nh_p_rener/code.html",
+      "bytes": 19765,
+      "sha256": "578ee485cbdd8054c8ae41549d84c42a858dac24ce9ac76e9a84dde3a6bc9733",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_6_ng_nh_p_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_6_ng_nh_p_rener/screen.png",
+      "bytes": 264315,
+      "sha256": "be4ff50851b96d9264d29c0701cfbb4319331c399981845f1d292fb07fd0077e",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_5_ph_n_t_ch_b_i_ng_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_5_ph_n_t_ch_b_i_ng_rener/code.html",
+      "bytes": 33242,
+      "sha256": "1b6dc5cbb74046fbda9b4e791588f3281e9797a8d3b1b17ae478b14d1a2291d9",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_5_ph_n_t_ch_b_i_ng_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_5_ph_n_t_ch_b_i_ng_rener/screen.png",
+      "bytes": 802575,
+      "sha256": "9cb994c10e42b6aef89176e5c48d411000872c0febc362df225af6adad71b1a9",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_8_h_ng_duy_t_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_8_h_ng_duy_t_rener/code.html",
+      "bytes": 36197,
+      "sha256": "de2a0fca297b3fdf43bad051539a1655ce10559842a6df03be8cf7779c3bfd4e",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_8_h_ng_duy_t_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_8_h_ng_duy_t_rener/screen.png",
+      "bytes": 28,
+      "sha256": "6c9a02e2605929162392587c714f045251761b8a72c4bced6d4cbc2e4303ef8b",
+      "png_signature_valid": false
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_7_kho_d_li_u_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_7_kho_d_li_u_rener/code.html",
+      "bytes": 43311,
+      "sha256": "e2a2499be2e4918b972b1ab872c90c4bac759bd85445f6eec31afb4471160c00",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_7_kho_d_li_u_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_7_kho_d_li_u_rener/screen.png",
+      "bytes": 496379,
+      "sha256": "545055ade28394bf09e3467fff242a95a53d59019ce684876d1ad14f5629a1da",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_9_duy_t_m_t_tin_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_9_duy_t_m_t_tin_rener/code.html",
+      "bytes": 35427,
+      "sha256": "d8d03a0fb35e82288f6556093d3c695392f7ff919139e6cc20ab5f1922645fae",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_9_duy_t_m_t_tin_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_9_duy_t_m_t_tin_rener/screen.png",
+      "bytes": 28,
+      "sha256": "6c9a02e2605929162392587c714f045251761b8a72c4bced6d4cbc2e4303ef8b",
+      "png_signature_valid": false
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_10_lab_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_10_lab_rener/code.html",
+      "bytes": 41106,
+      "sha256": "9e2dd01f778875b1c1b52b62cbf9b2f728d16a2c4c6c93b27ef4a07c00403a0f",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_10_lab_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_10_lab_rener/screen.png",
+      "bytes": 653458,
+      "sha256": "e0b246262477000a8c3958531a0ea4528cec070eaf28747d74ea14ec78dae429",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_11_nh_gi_rener/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/trang_11_nh_gi_rener/code.html",
+      "bytes": 34591,
+      "sha256": "19cf14cb8318433db30ff7a37b0c9a570fa384375c5c0461b6e323f79c643cd7",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/trang_11_nh_gi_rener/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/trang_11_nh_gi_rener/screen.png",
+      "bytes": 28,
+      "sha256": "6c9a02e2605929162392587c714f045251761b8a72c4bced6d4cbc2e4303ef8b",
+      "png_signature_valid": false
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/logo_rener_ai_lab_m_i/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/logo_rener_ai_lab_m_i/code.html",
+      "bytes": 4024,
+      "sha256": "63ae40fffb256a38d0ef43d096cc31e4f649d66616056829f75c67d91f727fb7",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/logo_rener_ai_lab_m_i/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/logo_rener_ai_lab_m_i/screen.png",
+      "bytes": 27116,
+      "sha256": "d20bbc5b04ce812ccdd32650941882ce2a9e94f4f729cbe0a6874374dc3981f5",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/logo_trocheck_th_m_nh_gi_ph_ng_tr/code.html",
+      "zip_entry": "rener_rental_intelligence_platform/logo_trocheck_th_m_nh_gi_ph_ng_tr/code.html",
+      "bytes": 3640,
+      "sha256": "5293b094834d20fb3108af04bc5a9784642220a90b1e971970d2c83504ce225d",
+      "png_signature_valid": null
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/logo_trocheck_th_m_nh_gi_ph_ng_tr/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/logo_trocheck_th_m_nh_gi_ph_ng_tr/screen.png",
+      "bytes": 32090,
+      "sha256": "79b411e76a7049c1b96e7b9301e5f6cf2bdd43d26272b5fbc40334b4a266eae7",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/image.png_1/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/image.png_1/screen.png",
+      "bytes": 43358,
+      "sha256": "fbaad5e4056f94c5b87ec014402fecdaaa0b2e36aa83106937b38055948753ef",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/a_clean_high_resolution_horizontal_modern_brand_identity_logo_presentation_on_a_1/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/a_clean_high_resolution_horizontal_modern_brand_identity_logo_presentation_on_a_1/screen.png",
+      "bytes": 262579,
+      "sha256": "0e3c4af68ec5daff2a81a0fa4e8091460e73176e6dfeead348e8555f3902b906",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/a_clean_high_resolution_horizontal_modern_brand_identity_logo_presentation_on_a_2/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/a_clean_high_resolution_horizontal_modern_brand_identity_logo_presentation_on_a_2/screen.png",
+      "bytes": 184728,
+      "sha256": "5d432407602ca774b9fce3b17250c139b0d03a6e5f96be83b6d6873836493a59",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/image.png_2/screen.png",
+      "zip_entry": "rener_rental_intelligence_platform/image.png_2/screen.png",
+      "bytes": 15456,
+      "sha256": "5c3d372bf2bf65eee5a3321e741db0cb99d9b47cd10045a4993c6a28de317000",
+      "png_signature_valid": true
+    },
+    {
+      "path": "export/rener_rental_intelligence_platform/warm_analytical_clarity/DESIGN.md",
+      "zip_entry": "rener_rental_intelligence_platform/warm_analytical_clarity/DESIGN.md",
+      "bytes": 12437,
+      "sha256": "73203ea84c08e99e548d18dc12411f38c59b36c517188aa589340787fbc1b25c",
+      "png_signature_valid": null
+    }
+  ]
+}

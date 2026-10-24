@@ -4,7 +4,7 @@
 
 Đồ án môn TMG301 — Xử lý ngôn ngữ tự nhiên, đề tài 8: *Trích xuất thông tin bất động sản từ bài đăng mạng xã hội (Real Estate NER)*. Repo này là nơi nhóm xây sản phẩm thật: web app, bộ xử lý dữ liệu và extension Chrome.
 
-> **Trạng thái:** đặc tả đầy đủ, chưa có code. Các thư mục `apps/` đã có README mô tả việc cần làm. Bắt đầu từ [lộ trình](docs/05-delivery/01-lo-trinh-va-phan-cong.md).
+> **Trạng thái:** đã có backend/pipeline/worker và web prototype dùng dữ liệu mock hoặc file local; chưa xác nhận luồng extension → API → web end-to-end. Bộ tham chiếu UI là tài liệu đối chiếu, chưa nhập vào ứng dụng. Xem [kết luận và phạm vi giao diện](docs/06-ui-reference/01-ket-luan-va-pham-vi.md).
 
 ---
 
@@ -68,11 +68,11 @@ spec/
   schemas/            JSON Schema: dữ liệu extension gửi lên, kết quả trích xuất
   fixtures/           Bài mẫu tự tạo kèm kết quả mong đợi
 apps/
-  web/                Next.js — chưa code
-  api/                FastAPI + pipeline — chưa code
+  web/                Next.js — prototype dùng mock/file local
+  api/                FastAPI + pipeline + worker đã có source
   extension/          Chrome MV3 — chưa code, giao bên làm extension
 data/                 Quy ước lưu dữ liệu (dữ liệu thật không commit)
-eval/                 Script đánh giá và kết quả chạy — chưa code
+eval/                 Script đánh giá đã có; kết quả cần chạy và kiểm chứng
 ```
 
 ## Công nghệ
@@ -93,3 +93,7 @@ Cách làm việc chung: [CONTRIBUTING.md](CONTRIBUTING.md). Hướng dẫn cho 
 ## Nguyên tắc dữ liệu
 
 Chỉ thu bài trong nhóm Facebook mà người dùng là thành viên, quy mô nhỏ, dừng khi Facebook yêu cầu xác minh. Số điện thoại bị che ngay trên máy người dùng trước khi gửi đi. Không lưu tên người đăng. Dữ liệu chỉ dùng nội bộ cho đồ án, **không commit dữ liệu thật lên repo**. Chi tiết: [rủi ro và pháp lý](docs/05-delivery/03-rui-ro-va-phap-ly.md).
+
+## Tham chiếu giao diện
+
+[Bộ ReNER UI Reference](design-references/rener-ui-2026-10-24/README.md) gồm HTML, ảnh, ZIP và manifest của bản xuất người dùng cung cấp. Đọc [kết luận đã đính chính](docs/06-ui-reference/01-ket-luan-va-pham-vi.md) trước khi dùng; không tạo lại các màn đã có hoặc coi bản xuất là app đã tích hợp.
