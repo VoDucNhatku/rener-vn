@@ -35,3 +35,6 @@ Thumbs.db
 
 # Local tooling
 .tmp/
+
+# Understand-Anything knowledge graph (local)
+.ua/
