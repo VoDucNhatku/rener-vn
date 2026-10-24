@@ -2,16 +2,23 @@ import { test, expect, type Page } from '@playwright/test';
 import path from 'node:path';
 
 const api = 'http://127.0.0.1:18000';
-const evidence = path.resolve('../../.tmp/b1-evidence');
-async function screenshot(page: Page, name: string) { await page.screenshot({ path: path.join(evidence, `${name}.png`), fullPage: true }); }
+const evidence = path.resolve('../../.tmp/b1-ui-evidence');
+async function screenshot(page: Page, name: string) {
+  await page.screenshot({ path: path.join(evidence, `${name}.png`), fullPage: true });
+}
 test.beforeEach(async ({ request, page }) => {
   await request.post(`${api}/_test/state`, { data: { mode: 'ok' } });
-  page.on('pageerror', (error) => { throw error; });
+  page.on('pageerror', (error) => {
+    throw error;
+  });
   page.on('console', (message) => {
-    if (message.type() === 'error' && /hydrat|did not match|server rendered/i.test(message.text())) throw new Error(message.text());
+    if (message.type() === 'error' && /hydrat|did not match|server rendered/i.test(message.text()))
+      throw new Error(message.text());
   });
 });
-test.afterEach(async ({ request }) => { await request.post(`${api}/_test/state`, { data: { mode: 'ok' } }); });
+test.afterEach(async ({ request }) => {
+  await request.post(`${api}/_test/state`, { data: { mode: 'ok' } });
+});
 
 test('seed -> real listing IDs -> evidence and comparison match API', async ({ page, request }) => {
   const listings = await (await request.get(`${api}/api/v1/listings`)).json();
@@ -77,8 +84,10 @@ test('range/from/person/hidden, emoji, null dates and incomplete text', async ({
     await expect(page.locator('body')).not.toContainText('Invalid Date');
     if (key === 'range') await expect(page.getByRole('button', { name: /GIÁ Giá thuê/ })).toContainText('3 tr–3,5 tr');
     if (key === 'from') await expect(page.getByRole('button', { name: /GIÁ Giá thuê/ })).toContainText('Từ 3 tr');
-    if (key === 'person') await expect(page.getByRole('button', { name: /GIÁ Giá thuê/ })).toContainText('/tháng/người');
-    if (key === 'hidden') await expect(page.getByRole('button', { name: /GIÁ Giá thuê/ })).toContainText('Bài không công khai giá');
+    if (key === 'person')
+      await expect(page.getByRole('button', { name: /GIÁ Giá thuê/ })).toContainText('/tháng/người');
+    if (key === 'hidden')
+      await expect(page.getByRole('button', { name: /GIÁ Giá thuê/ })).toContainText('Bài không công khai giá');
     if (key === 'partial') await expect(page.getByText('Chữ chưa đầy đủ', { exact: true })).toBeVisible();
     if (key === 'emoji') {
       await expect(page.locator('button[data-label="PRICE"]').first()).toContainText('5tr5');
@@ -157,9 +166,16 @@ test('desktop/mobile layout, filters and keyboard focus', async ({ page, request
   const { edges } = await (await request.get(`${api}/_test/state`)).json();
   for (const width of [360, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const [name, url] of [['home', '/'], ['listings', '/tim-tro'], ['detail', `/tin/${edges.emoji}?demo=true`]]) {
+    for (const [name, url] of [
+      ['home', '/'],
+      ['listings', '/tim-tro'],
+      ['detail', `/tin/${edges.emoji}?demo=true`],
+    ]) {
       await page.goto(url);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${name} width=${width}`).toBeTruthy();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        `${name} width=${width}`,
+      ).toBeTruthy();
       if (name === 'listings' && width < 768) {
         await page.getByRole('button', { name: /Bộ lọc/ }).click();
         await expect(page.getByRole('button', { name: 'Cầu Giấy', exact: true })).toBeVisible();

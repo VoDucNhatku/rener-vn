@@ -1,6 +1,6 @@
 # Sử dụng bộ thiết kế Stitch cho ReNER-VN
 
-Kiểm tra ngày **24/10/2026**. Tài liệu phục vụ kế hoạch chuyển thiết kế sang Next.js; chưa triển khai giao diện mới.
+Kiểm tra và cập nhật ngày **24/10/2026**. S0/B1-UI đã triển khai ba trang công khai `/`, `/tim-tro`, `/tin/[id]` cùng header/footer trên nền API B1. [Hệ token/component đã chốt](../DESIGN.md), [kết quả và bằng chứng kiểm](08-ket-qua-s0-b1-ui-2026-10-24.md). Các màn nhóm/auth/Lab/đánh giá/extension vẫn là giai đoạn sau.
 
 ## 1. ZIP này là gì?
 
@@ -15,7 +15,7 @@ Nguồn do người dùng cung cấp: `stitch_rener_rental_intelligence_platform
 
 Khi đọc tĩnh 17 HTML: không thấy lời gọi `fetch`, `XMLHttpRequest` hoặc `axios`; có 130 link `href="#"`. Một số trang có JavaScript minh họa chọn mẫu, sao chép token, checkbox hoặc toast. Đây là bản xuất thiết kế, chưa phải frontend tích hợp hay backend/extension.
 
-Đã đọc HTML/tài liệu, tạo contact sheet của 23 ảnh và xem chi tiết ảnh Tìm trọ/Duyệt tin. Chưa chạy các HTML trong trình duyệt hoặc kiểm chứng tương tác/responsive của chúng.
+Đã đọc HTML/tài liệu, tạo contact sheet của 23 ảnh; ở B1-UI xem riêng cả ba ảnh trang công khai và đối chiếu giao diện đã chuyển. HTML là tham chiếu tĩnh; responsive/tương tác được kiểm trên ứng dụng React thật, không được mặc định là đúng từ bản xuất.
 
 ## 2. Cách mở và dùng ngay trên máy
 
@@ -44,7 +44,7 @@ Không ghi đè nguồn ZIP. `.tmp` không phải gói bàn giao và có thể k
 |---|---|
 | Quy tắc giá, dữ liệu, nhãn, quyền, API | `AGENTS.md`, schema, đặc tả nghiệp vụ và code API đã đối chiếu |
 | Bố cục/hệ phân cấp thị giác | `screen.png` và HTML của màn tương ứng, sau khi bỏ phần không có dữ liệu hỗ trợ |
-| Màu/chữ/khoảng cách | So `DESIGN.md` với HTML và chuẩn hóa thành một bộ token; hiện chúng chưa nhất quán |
+| Màu/chữ/khoảng cách | Theo [docs/DESIGN.md](../DESIGN.md) và `tokens.css` đã chốt; tài liệu/HTML gốc của ZIP có khác biệt được giải quyết ở S0 |
 | State và menu theo vai trò | Bảng RBAC trong ZIP là checklist; quyền thực tế lấy từ API và tài liệu gốc |
 | Nội dung/số liệu động | Response API, trạng thái worker, run đánh giá thật; không lấy số trong ảnh |
 
@@ -102,9 +102,9 @@ Bảng RBAC trong ZIP hữu ích ở chỗ phân biệt sáu trục: tiến trì
 
 `DESIGN.md` tự mâu thuẫn: frontmatter dùng nền `#f9f9ff`, primary `#005243`; phần diễn giải dùng `#FAFAF7`, primary `#146C5A`. Góc bo cũng có nhiều cách gọi. HTML/ảnh chủ yếu theo nền sáng hơi xanh, điểm nhấn xanh lục đậm. CSS hiện tại của web lại dùng nền `#f6f4ee`, accent `#2337c6` và thêm Newsreader/JetBrains Mono.
 
-Trong S0, chuẩn hóa một bảng token đích dựa vào HTML/ảnh đại diện, kiểm tương phản và ghi quyết định vào tài liệu thiết kế của repo. Đề xuất hướng Stitch: Be Vietnam Pro làm font UI chính, xanh lục đậm cho thao tác, bảng/token NER có chữ nhãn; màu nhãn dùng chung toàn hệ thống. Không trộn hai palette trong một màn hay giữ hai biến cùng nghĩa khác màu.
+S0 đã chọn nền `#f9f9ff`, primary `#005243`, hover/focus `#146c5a`, Be Vietnam Pro và bộ màu NER có chữ nhãn. Bỏ palette prototype và diễn giải nền ngà, chuẩn hóa bo panel 12px/control 8px. Chi tiết và hợp đồng component tương lai ở [docs/DESIGN.md](../DESIGN.md).
 
-Không coi lời khẳng định WCAG AAA trong tài liệu xuất là kết quả kiểm tra. Khi làm UI phải đo contrast thật, kiểm nhãn nhỏ, chữ trên badge và focus. Chưa đổi token app trong lượt cập nhật kế hoạch này.
+Không coi lời khẳng định WCAG AAA trong tài liệu xuất là kết quả kiểm tra. B1-UI đã đo text hiển thị trên ba trang ở bốn bề rộng, kiểm nhãn/badge/focus và lưu báo cáo; phạm vi kiểm được ghi trong bàn giao, chưa phải chứng nhận WCAG toàn bộ.
 
 ### 6.2. Thành phần dùng chung đề xuất
 
@@ -130,22 +130,22 @@ Mẫu hướng desktop, PNG có nhiều kích thước chụp và một số ch�
 
 ## 7. Thứ tự triển khai với kế hoạch hiện có
 
-1. **S0 – tiếp nhận thiết kế:** dùng bảng trong tài liệu này; chốt mapping, nội dung cần bỏ/sửa, token và component chung. Kiểm kê đã làm trong lượt này; chuẩn hóa token vào app chưa làm.
-2. **B0/B1 – nối dữ liệu:** dùng web hiện tại để kiểm chứng API/DB, chuẩn bị các state và adapter có thể dùng lại; chưa cần chuyển toàn bộ 12 màn.
-3. **B1-UI – áp dụng Stitch cho ba trang đang có:** chuyển token/header và `/`, `/tim-tro`, `/tin/[id]` trên nền API đã chạy; kiểm hồi quy ngay sau mỗi màn.
+1. **S0 – đã chốt:** mapping, nội dung cần bỏ/sửa, token và component specification ở tài liệu Design. Public component đã chạy; shell nhóm/form/table/dialog/token panel mới dừng ở specification.
+2. **B0/B1 – đã có bàn giao:** [kết quả môi trường/API](07-ket-qua-b0-b1-2026-10-24.md), giữ làm nền tích hợp.
+3. **B1-UI – đã triển khai:** token/header/footer và ba trang công khai; kiểm hồi quy và ảnh tại [bàn giao UI](08-ket-qua-s0-b1-ui-2026-10-24.md).
 4. **B2/B3/B6 – các màn mới:** triển khai thẳng theo blueprint đã chuẩn hóa cho auth, account/token, Kho, Duyệt, Lab, kết quả phân tích và Đánh giá; không thiết kế lại từ đầu.
 5. **B7 – hoàn thiện:** bảng Thị trường nếu kịp, visual QA, mobile, dữ liệu thật và diễn tập.
 
 S0/B1-UI không phải lý do trì hoãn thu dữ liệu, làm extension hay đánh giá. Nếu sát hạn, ưu tiên giao diện nhất quán ở thành phần dùng chung và các luồng P0; không cắt nghiệm thu để khớp từng pixel của mockup.
 
-## 8. Checklist bàn giao khi đã triển khai Stitch
+## 8. Checklist bàn giao B1-UI (ba trang công khai)
 
-- [ ] Mỗi màn có route, nguồn dữ liệu/API, quyền, state và bằng chứng kiểm.
-- [ ] Không còn ID/số liệu/model giả từ ZIP trong luồng sử dụng thật; minh họa tĩnh có nhãn.
-- [ ] Không có ảnh phòng gán sai nguồn, tên/IP/SSO/độ chính xác bịa hoặc claim xác thực.
-- [ ] Chỉ có một bộ token, tên thương hiệu nhất quán, asset có nguồn; không render chuỗi SVG base64 như chữ.
-- [ ] Link/button hoạt động hoặc có trạng thái chưa hỗ trợ rõ ràng; không còn `href="#"` để thay route.
-- [ ] Token A/B/C chạy với API, quyền đúng và hạn dùng đúng.
-- [ ] Typecheck/build/test tích hợp đạt; responsive, bàn phím, contrast và lỗi được kiểm.
+- [x] Ba màn có route, nguồn dữ liệu/API public read, state và bằng chứng kiểm.
+- [x] Không có ID/số liệu/model giả từ ZIP trong luồng thật; minh họa tĩnh có nhãn.
+- [x] Không có ảnh phòng gán sai nguồn, tên/IP/SSO/độ chính xác bịa hoặc claim xác thực.
+- [x] Một bộ token, tên ReNER-VN/ReNER nhất quán, icon Lucide có sẵn; không render SVG base64 như chữ.
+- [x] Link/button trong phạm vi hoạt động; không còn `href="#"` để thay route.
+- [x] Typecheck/build, 4/4 integration và 13/13 E2E đạt; kiểm 360/390/768/1440px, bàn phím, contrast, reduced motion, lỗi.
+- [ ] B2: Token A/B/C chạy với API, quyền đúng và hạn dùng đúng (ngoài B1-UI).
 
 Liên quan: [Kế hoạch hoàn thiện](04-ke-hoach-hoan-thien-2026-10-24.md), [Prompt B0/B1](05-prompt-noi-web-api.md), [Bối cảnh sản phẩm](../PRODUCT.md).

@@ -55,7 +55,13 @@ export function PriceDistributionBar({ comparison: c, targetRent, compact }: Pro
   }
 
   // Scale for drawing only: span the quartiles, the target and the similar listings.
-  const points = [c.p25, c.p75, c.median, ...(targetRent != null ? [targetRent] : []), ...c.similar.map((s) => s.rent_vnd)];
+  const points = [
+    c.p25,
+    c.p75,
+    c.median,
+    ...(targetRent != null ? [targetRent] : []),
+    ...c.similar.map((s) => s.rent_vnd),
+  ];
   const lo = Math.min(...points) * 0.88;
   const hi = Math.max(...points) * 1.08;
   const pos = (v: number) => `${((v - lo) / (hi - lo)) * 100}%`;
@@ -69,6 +75,14 @@ export function PriceDistributionBar({ comparison: c, targetRent, compact }: Pro
           targetRent != null ? `, tin này ${formatShort(targetRent)}` : ''
         }.`}
       >
+        {targetRent != null && (
+          <span
+            className={styles.targetLabel}
+            style={{ left: `${Math.max(22, Math.min(78, parseFloat(pos(targetRent))))}%` }}
+          >
+            Tin này · {formatShort(targetRent)}
+          </span>
+        )}
         <div className={styles.axis} />
         <div className={styles.iqr} style={{ left: pos(c.p25), width: `calc(${pos(c.p75)} - ${pos(c.p25)})` }} />
         <div className={styles.median} style={{ left: pos(c.median) }} />
@@ -77,23 +91,33 @@ export function PriceDistributionBar({ comparison: c, targetRent, compact }: Pro
         ))}
         {targetRent != null && (
           <div className={styles.target} style={{ left: pos(targetRent) }}>
-            <span className={styles.targetLabel}>Tin này · {formatShort(targetRent)}</span>
             <span className={styles.targetDot} />
           </div>
         )}
       </div>
       <dl className={styles.legend}>
         <div>
-          <dt><span className={styles.swIqr} aria-hidden="true" />P25–P75</dt>
-          <dd className="num">{formatShort(c.p25)} – {formatShort(c.p75)}</dd>
+          <dt>
+            <span className={styles.swIqr} aria-hidden="true" />
+            P25–P75
+          </dt>
+          <dd className="num">
+            {formatShort(c.p25)} – {formatShort(c.p75)}
+          </dd>
         </div>
         <div>
-          <dt><span className={styles.swMedian} aria-hidden="true" />Trung vị</dt>
+          <dt>
+            <span className={styles.swMedian} aria-hidden="true" />
+            Trung vị
+          </dt>
           <dd className="num">{formatShort(c.median)}</dd>
         </div>
         {c.similar.length > 0 && (
           <div>
-            <dt><span className={styles.swPeer} aria-hidden="true" />Tin giống nhất</dt>
+            <dt>
+              <span className={styles.swPeer} aria-hidden="true" />
+              Tin giống nhất
+            </dt>
             <dd className="num">{c.similar.length}</dd>
           </div>
         )}

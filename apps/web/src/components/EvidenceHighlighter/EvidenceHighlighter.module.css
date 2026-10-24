@@ -1,28 +1,22 @@
 .text {
   color: var(--ink);
   white-space: pre-wrap;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
-
 .md {
-  font-size: 15px;
-  line-height: 2.6;
+  font-size: 14px;
+  line-height: 2.1;
 }
-
 .lg {
-  font-family: var(--font-serif);
-  font-size: 21px;
-  line-height: 2.5;
-  letter-spacing: -0.005em;
+  font-size: 15px;
+  line-height: 2.3;
 }
-
 .mark {
-  position: relative;
   display: inline;
-  padding: 3px 3px 2px;
+  padding: 3px;
   margin: 0 1px;
   border: 0;
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   color: var(--mk-ink);
   font: inherit;
   line-height: inherit;
@@ -30,22 +24,18 @@
   background-color: var(--mk);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  transition:
-    opacity var(--dur-base) var(--ease),
-    box-shadow var(--dur-base) var(--ease);
+  transition: box-shadow var(--dur-fast) var(--ease);
 }
-
-/* Buttons render as inline-block, so they must not inherit the tall paragraph line-height. */
 button.mark {
   cursor: pointer;
-  line-height: 1.35;
+  line-height: 1.8;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   vertical-align: baseline;
 }
-
 button.mark:hover {
-  box-shadow: inset 0 -2px 0 var(--ink);
+  box-shadow: inset 0 -2px 0 var(--accent);
 }
-
 .PRICE {
   --mk: var(--mk-price);
 }
@@ -61,42 +51,27 @@ button.mark:hover {
 .FEE {
   --mk: var(--mk-fee);
 }
-
-/* Label above the span, like Hình 2 in the proposal: readable without colour. */
 .tag {
-  position: absolute;
-  left: 2px;
-  bottom: calc(100% - 1px);
+  display: inline;
+  margin-right: 4px;
   font-family: var(--font-sans);
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.06em;
-  color: var(--ink-2);
+  color: var(--mk-ink);
   white-space: nowrap;
   pointer-events: none;
 }
-
-.lg .tag {
-  font-size: 10.5px;
-  bottom: calc(100% + 1px);
-}
-
 .rule {
   font-family: var(--font-mono);
   font-weight: 500;
-  letter-spacing: 0;
-  color: var(--ink-3);
 }
-
 .dimmed .mark:not(.active) {
-  opacity: 0.38;
+  background-color: var(--subtle);
 }
-
 .active {
-  box-shadow: 0 0 0 2px var(--ink);
+  box-shadow: 0 0 0 2px var(--accent);
 }
-
 .mismatch {
   outline: 2px dashed var(--v-higher);
   outline-offset: 1px;

@@ -6,6 +6,8 @@ Workspace thực thi: `F:\TMG Final Project\rener-vn-latest`.
 
 **Cập nhật cùng ngày sau khi nhận Stitch:** đã kiểm tra `stitch_rener_rental_intelligence_platform.zip`. Bộ này bổ sung blueprint cho phần lớn màn hình, không bổ sung backend hay frontend đã tích hợp. Thêm S0 và B1-UI vào kế hoạch; xem [hướng dẫn và bảng đối chiếu Stitch](06-huong-dan-su-dung-stitch.md).
 
+**Tiến độ thực thi 24/10:** B0/B1 có [bàn giao môi trường/API](07-ket-qua-b0-b1-2026-10-24.md). S0 và B1-UI đã hoàn thành trong phạm vi ba trang công khai; token/component specification ở [Design](../DESIGN.md), kiểm tra và ảnh ở [bàn giao S0/B1-UI](08-ket-qua-s0-b1-ui-2026-10-24.md). Các checkbox B0/B1 bên dưới là checklist kế hoạch gốc; xem bàn giao 07 để biết bằng chứng đã chạy trước lượt UI.
+
 Tài liệu này là kế hoạch triển khai tiếp từ mã nguồn hiện có. Các quy tắc nghiệp vụ vẫn theo `AGENTS.md`, từ điển dữ liệu, schema và các đặc tả gốc. Kế hoạch không xác nhận hệ thống đã qua nghiệm thu.
 
 ## 1. Mục tiêu và phạm vi hoàn thành
@@ -28,11 +30,11 @@ Tài liệu này là kế hoạch triển khai tiếp từ mã nguồn hiện c�
 
 Nếu phải giảm phạm vi, ưu tiên hoãn yêu thích, biểu đồ xu hướng và hiệu ứng mới. Việc thiếu một hạng mục P0 cần được ghi rõ; đường dự phòng không tự động thay thế tiêu chí nghiệm thu extension.
 
-## 2. Hiện trạng đã kiểm tra
+## 2. Hiện trạng đã kiểm tra (bảng gốc, cập nhật web sau B1-UI)
 
 | Thành phần | Đã có trong repo | Cần làm hoặc xác minh |
 |---|---|---|
-| Web Next.js 15 / React 19 | `/`, `/tim-tro`, `/tin/[id]`, bộ lọc URL, bôi màu evidence, thanh phân bố giá | Đang đọc mock/file cục bộ; chưa kết nối API; thiếu màn hình khu nhóm và đăng nhập |
+| Web Next.js 15 / React 19 | `/`, `/tim-tro`, `/tin/[id]`, bộ lọc URL, bôi màu evidence, thanh phân bố giá | Đã nối FastAPI ở B1 và chuyển Stitch ở B1-UI, có kiểm hồi quy; khu nhóm/đăng nhập chưa triển khai |
 | Thiết kế Stitch mới | 17 HTML màn/trạng thái, 2 logo SVG base64, 23 PNG, DESIGN.md và bảng RBAC | Đã có blueprint cho 12 màn chính; phải chuyển sang component, nối dữ liệu và sửa nội dung lệch nghiệp vụ |
 | API FastAPI | Routes cho auth, ingest, analyses, listings, comparison, market, team, Lab, eval | Chạy migration, test và kiểm tra response thực tế; hoàn thiện OpenAPI response cho phần tích hợp |
 | SQLite và worker | ORM, Alembic, job worker, seed và CLI | Kiểm tra dùng chung database, trạng thái job, retry, chạy lại sau khi dừng |
@@ -42,7 +44,7 @@ Nếu phải giảm phạm vi, ưu tiên hoãn yêu thích, biểu đồ xu hư�
 | Đánh giá | `eval/run_eval.py`, test và API đọc kết quả | Chưa có nhánh LLM-raw cho RQ2 theo README API; cần đối chiếu đủ chỉ số và RQ4 |
 | Tài liệu | Đặc tả sản phẩm, API, pipeline, đánh giá và AT01–AT18/E1–E12 | README gốc và một số README thành phần còn ghi trạng thái cũ |
 
-Đã từng khởi động web và nhận HTTP 200 tại `http://localhost:3000`. Phiên lập kế hoạch này **chưa chạy backend, bộ test, Gemini hay kiểm thử toàn luồng**. Khi bắt đầu thực thi phải kiểm tra lại tiến trình và trạng thái git.
+**Bản ghi phiên lập kế hoạch trước thực thi:** Đã từng khởi động web và nhận HTTP 200 tại `http://localhost:3000`. Phiên lập kế hoạch này **chưa chạy backend, bộ test, Gemini hay kiểm thử toàn luồng**. Khi bắt đầu thực thi phải kiểm tra lại tiến trình và trạng thái git.
 
 ## 3. Phụ thuộc và cách tổ chức công việc
 
@@ -72,16 +74,16 @@ Mỗi gói việc tạo issue và branch riêng khi triển khai theo `CONTRIBUT
 
 ### S0. Tiếp nhận và chuẩn hóa thiết kế Stitch
 
-**Phụ trách:** TV3, TV1/TV2 đối chiếu nghiệp vụ. **Ước lượng còn lại:** 0,5–1 ngày công cho token/component specification; không cần đợi để khởi động B0/B1.
+**Phụ trách:** TV3, TV1/TV2 đối chiếu nghiệp vụ. **Trạng thái:** hoàn thành token/component specification; public component đã triển khai, component nhóm/token panel là hợp đồng cho giai đoạn sau.
 
 - [x] Kiểm kê ZIP, đọc DESIGN/RBAC/HTML và xem bộ ảnh; giải nén tham chiếu vào `.tmp/stitch-reference-2026-10-24`.
 - [x] Lập bản đồ 17 màn/trạng thái sang route/gói việc và liệt kê nội dung không khớp API trong [hướng dẫn Stitch](06-huong-dan-su-dung-stitch.md).
-- [ ] Chuẩn hóa palette, typography, spacing và trạng thái thành một nguồn token; giải quyết khác biệt giữa frontmatter DESIGN, diễn giải DESIGN, HTML và CSS đang có.
-- [ ] Chốt component chung: public header/team shell, form/table/pagination, evidence/comparison, token panel, lỗi/rỗng/loading.
-- [ ] Giữ tên ReNER-VN/ReNER ở bước tích hợp; quyết định dùng thương hiệu/logo TrọCheck nếu có phải được ghi riêng trước khi thay đồng loạt.
-- [ ] Gắn từng control trong mockup với API/quyền/state; những tính năng chưa có hợp đồng đưa vào P1 hoặc backlog riêng.
+- [x] Chuẩn hóa palette, typography, spacing và trạng thái thành một nguồn token; giải quyết khác biệt giữa frontmatter DESIGN, diễn giải DESIGN, HTML và CSS đang có.
+- [x] Chốt component chung: public header/team shell, form/table/pagination, evidence/comparison, token panel, lỗi/rỗng/loading.
+- [x] Giữ tên ReNER-VN/ReNER ở bước tích hợp; quyết định dùng thương hiệu/logo TrọCheck nếu có phải được ghi riêng trước khi thay đồng loạt.
+- [x] Gắn từng control trong mockup với API/quyền/state; những tính năng chưa có hợp đồng đưa vào P1 hoặc backlog riêng.
 
-**Đầu ra:** bảng mapping và hướng dẫn nội dung đã có; tiếp theo là token/component spec đủ nhất quán để chuyển UI. Không lấy PhoBERT, F1, ảnh phòng/AI xác thực hoặc các KPI trong ZIP làm yêu cầu nghiệp vụ mới.
+**Đầu ra:** [token/component spec và control/API mapping](../DESIGN.md) đã chốt và áp dụng vào ba trang; bảng mapping toàn bộ màn ở hướng dẫn 06. Shell nhóm/form/table/dialog/token panel chỉ được chốt specification, không đánh dấu đã triển khai. Không lấy PhoBERT, F1, ảnh phòng/AI xác thực hoặc các KPI trong ZIP làm yêu cầu nghiệp vụ mới.
 
 ### B0. Xác lập môi trường và kết quả ban đầu
 
@@ -136,15 +138,15 @@ Prompt thực thi riêng: [05-prompt-noi-web-api.md](05-prompt-noi-web-api.md).
 
 ### B1-UI. Chuyển ba trang hiện có theo Stitch trên nền API thật
 
-**Phụ trách:** TV3. **Phụ thuộc:** B1 đạt kiểm tra và S0 có token/mapping. **Ước lượng:** 1–2 ngày công; đây là công việc thêm so với kế hoạch trước khi có ZIP.
+**Phụ trách:** TV3. **Phụ thuộc:** B1 đạt kiểm tra và S0 có token/mapping. **Trạng thái:** hoàn thành trong phạm vi ba trang; 4/4 integration, 13/13 E2E, typecheck/build và live smoke đạt. [Bằng chứng/ảnh và giới hạn kiểm](08-ket-qua-s0-b1-ui-2026-10-24.md).
 
-- [ ] Chuẩn hóa `tokens.css` theo hướng đã chốt; ưu tiên CSS Modules, Be Vietnam Pro và thư viện icon/font sẵn có. Không thêm Tailwind runtime CDN để chạy bản xuất.
-- [ ] Chuyển header/layout và `/`, `/tim-tro`, `/tin/[id]` từng màn; giữ adapter/API contract và logic evidence/comparison đã kiểm ở B1.
-- [ ] Dùng bố cục/card dựa trên dữ liệu chữ/evidence khi backend không có ảnh; bỏ gallery “AI xác thực”, tên người đăng và claim an toàn của mẫu.
-- [ ] Giữ bộ lọc đang được API hỗ trợ; search tự do, yêu thích, basis filter mới và badge/facet không có nguồn là việc riêng.
-- [ ] Link, nút và số liệu có nguồn thật; ví dụ tự tạo trên landing có nhãn. Không chép `href="#"`, toast thành công hay timer giả từ HTML.
-- [ ] Kiểm 360/390, 768, 1440px; bảng/input không bị cắt, menu mobile, keyboard/focus, contrast, reduced motion và các trạng thái lỗi.
-- [ ] So ảnh tham chiếu với giao diện thật, ghi lý do những phần điều chỉnh theo nghiệp vụ; chạy lại test tích hợp có thể bị ảnh hưởng.
+- [x] Chuẩn hóa `tokens.css` theo hướng đã chốt; ưu tiên CSS Modules, Be Vietnam Pro và thư viện icon/font sẵn có. Không thêm Tailwind runtime CDN để chạy bản xuất.
+- [x] Chuyển header/layout và `/`, `/tim-tro`, `/tin/[id]` từng màn; giữ adapter/API contract và logic evidence/comparison đã kiểm ở B1.
+- [x] Dùng bố cục/card dựa trên dữ liệu chữ/evidence khi backend không có ảnh; bỏ gallery “AI xác thực”, tên người đăng và claim an toàn của mẫu.
+- [x] Giữ bộ lọc đang được API hỗ trợ; search tự do, yêu thích, basis filter mới và badge/facet không có nguồn là việc riêng.
+- [x] Link, nút và số liệu có nguồn thật; ví dụ tự tạo trên landing có nhãn. Không chép `href="#"`, toast thành công hay timer giả từ HTML.
+- [x] Kiểm 360/390, 768, 1440px; bảng/input không bị cắt, menu mobile, keyboard/focus, contrast, reduced motion và các trạng thái lỗi.
+- [x] So ảnh tham chiếu với giao diện thật, ghi lý do những phần điều chỉnh theo nghiệp vụ; chạy lại test tích hợp có thể bị ảnh hưởng.
 
 **Nghiệm thu:** ba trang dùng API thật và hệ visual nhất quán lấy từ Stitch; giữ đủ tiêu chí B1, không cần khớp pixel các phần mẫu sai dữ liệu. Các màn mới B2/B3/B6 dùng trực tiếp component/token đã chuẩn hóa, không dựng thêm một hệ style.
 

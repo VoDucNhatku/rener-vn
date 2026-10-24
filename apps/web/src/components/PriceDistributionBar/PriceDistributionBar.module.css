@@ -169,11 +169,7 @@
   padding: var(--s-4);
   border: 1px dashed var(--border-strong);
   border-radius: var(--r-lg);
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent 0 8px,
-    color-mix(in srgb, var(--ink) 3%, transparent) 8px 9px
-  );
+  background: var(--subtle);
 }
 
 .emptyTrack {

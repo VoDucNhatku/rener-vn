@@ -65,6 +65,8 @@ async def failures(request: Request, call_next):
     if path.startswith('/api/v1/'):
         if mode == 'timeout':
             await asyncio.sleep(2)
+        if mode == 'comparison_slow' and path.endswith('/comparison'):
+            await asyncio.sleep(.5)
         if mode == 'fail' or (mode == 'comparison_error' and path.endswith('/comparison')):
             return JSONResponse({'error': {'code': 'unavailable', 'message': 'API kiểm thử tạm dừng', 'request_id': 'b1-e2e'}}, status_code=503)
         if mode == 'comparison_404' and path.endswith('/comparison'):
